@@ -8,4 +8,5 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function() {
     Route::put('/profile', [AuthController::class, 'update']);
+    Route::put('/change-password', [AuthController::class, 'changePassword']);
 });
