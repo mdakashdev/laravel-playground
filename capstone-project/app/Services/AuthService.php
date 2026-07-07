@@ -4,7 +4,6 @@ namespace App\Services;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Repositories\UserRepository;
-use http\Env\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -75,6 +74,15 @@ class AuthService
             $user,
             Hash::make($data['password']) //new password hashing
         );
+
+        return response()->noContent();
+    }
+
+    public function logout(User $user)
+    {
+        $user->currentAccessToken()->delete(); //
+        //all device logout
+        //$user->tokens()->delete();
 
         return response()->noContent();
     }

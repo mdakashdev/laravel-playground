@@ -58,6 +58,14 @@ class AuthController extends Controller
             $request->user(),
             $request->validated()
         );
+    }
 
+    public function logout(Request $request)
+    {
+        //authenticated user ke service a pathacche
+//        dd($request->user()->currentAccessToken());
+        $this->authService->logout(
+            $request->user()
+        );
     }
 }
