@@ -80,9 +80,9 @@ class AuthService
 
     public function logout(User $user)
     {
-        $user->currentAccessToken()->delete(); //
-        //all device logout
-        //$user->tokens()->delete();
+       // $user->currentAccessToken()->delete(); //
+
+        $user->tokens()->delete(); //all device logout
 
         return response()->noContent();
     }

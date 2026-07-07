@@ -10,6 +10,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::put('/profile', [AuthController::class, 'update']);
     Route::put('/change-password', [AuthController::class, 'changePassword']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/me', [AuthController::class, 'me']);
 });
 
 //using middleware for this endpoint
@@ -21,4 +22,9 @@ Route::middleware('auth:sanctum')->group(function() {
 /**
  * logout
  * post /logout -> routes -> controller -> services -> response
+ */
+
+/**
+ * me (current user)
+ * GET /me -> routes -> controller
  */
