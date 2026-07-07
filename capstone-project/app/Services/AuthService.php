@@ -4,8 +4,10 @@ namespace App\Services;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Repositories\UserRepository;
+use http\Env\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class AuthService
@@ -56,6 +58,25 @@ class AuthService
         return DB::transaction(function () use ($user, $data) {
            return $this->userRepository->updateProfile($user, $data);
         });
+    }
+
+    public function changePassword(User $user, array $data)
+    {
+        //manually password verify without request file rules - current_password
+//        if (! Hash::check($data['current_password'], $user->password)) {
+//            throw ValidationException::withMessages([
+//                'current_password' => [
+//                    'The current password is incorrect.'
+//                ],
+//            ]);
+//        }
+
+        $this->userRepository->changePassword(
+            $user,
+            Hash::make($data['password']) //new password hashing
+        );
+
+        return response()->noContent();
     }
 
     //talk with business logic

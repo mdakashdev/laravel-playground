@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Services\AuthService;
@@ -46,5 +47,17 @@ class AuthController extends Controller
         );
 
         return new UserResource($result);
+    }
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        //$data = $request->validated();
+        //dd($data);
+        //dd($request->user());
+        return $this->authService->changePassword(
+            $request->user(),
+            $request->validated()
+        );
+
     }
 }

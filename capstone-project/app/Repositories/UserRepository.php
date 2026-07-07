@@ -21,9 +21,13 @@ class UserRepository
 
         return $user->fresh();
     }
-    public function changePassword(User $user, array $data)
+    public function changePassword(User $user, string $password): User
     {
-        return 'updatePassword';
+        $user->update([
+            'password' => $password,
+        ]);
+
+        return $user;
     }
 }
 
