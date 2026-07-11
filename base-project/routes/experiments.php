@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Experiments\DependencyInjection\VersionA\UserController as A;
 use App\Experiments\DependencyInjection\VersionB\UserController as B;
 
-
+// di -> dependency injection
 Route::get('/experiments/di/a', function () {
     return (new A())->register();
 });

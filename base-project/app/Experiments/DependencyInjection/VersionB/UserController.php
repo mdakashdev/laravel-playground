@@ -1,6 +1,8 @@
 <?php
 namespace App\Experiments\DependencyInjection\VersionB;
 
+use App\Experiments\DependencyInjection\MailService;
+
 class UserController
 {
     public function __construct(
