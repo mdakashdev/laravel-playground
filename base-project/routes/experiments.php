@@ -4,12 +4,20 @@ use Illuminate\Support\Facades\Route;
 use App\Experiments\DependencyInjection\VersionA\UserController as A;
 use App\Experiments\DependencyInjection\VersionB\UserController as B;
 use App\Experiments\DependencyInjection\DependencyController;
+use App\Experiments\Bindings\BindingController;
 
 /**
  * Dependency & Dependency Injection & Inverse of Control (IoC)
  */
 Route::get('/experiments/dependency', [DependencyController::class, 'dependency']);
 Route::get('/experiments/dependency-injection', [DependencyController::class, 'dependencyInjection']);
+
+
+/**
+ * Binding - as like Phone Contact
+ */
+Route::get('/experiments/bindings', [BindingController::class, 'register']);
+
 
 // di -> dependency injection
 Route::get('/experiments/di/a', function () {
