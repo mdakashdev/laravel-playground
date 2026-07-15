@@ -9,5 +9,12 @@ class Container
     {
         $this->bindings[$name] = $class;
     }
+
+    public function make($name)
+    {
+        $class = $this->bindings[$name];
+
+        return new $class();
+    }
 }
 

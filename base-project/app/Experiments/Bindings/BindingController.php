@@ -14,9 +14,9 @@ class BindingController
     public function register()
     {
         $this->container->bind('PaymentGateway', MailService::class);
-
         //see result
         //dd($this->container);
+            var_dump($this->container->make('PaymentGateway'));
 
         return "successfully registered";
     }
