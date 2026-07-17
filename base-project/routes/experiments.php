@@ -59,3 +59,40 @@ Route::get('/experiments/reflection', function (App\Experiments\PhpReflection\Ma
 //);
 //
 //var_dump($reflection->getConstructor());
+
+
+/**
+ * Nested dependency
+ *
+ * Test: binding, make = what output for dependency
+ */
+
+//Route::get('/experiments/nest-dependency', [\App\Experiments\NestedDependency\UserController::class, 'register']);
+
+Route::get('/experiments/nest-dependency', function (\App\Experiments\NestedDependency\Container $container) {
+    $container->make(\App\Experiments\NestedDependency\UserController::class);
+});
+
+
+
+//Route::get('/experiments/nest-dependency', function(\App\Experiments\NestedDependency\UserController $userController) {
+//    $ref = new ReflectionClass($userController);
+//    $constructor = $ref->getConstructor();
+//
+//    //var_dump($ref);
+//
+//    foreach ($constructor->getParameters() as $item) {
+//        echo $item->getName();
+//    }
+//});
+
+//ekhane hobe na, ami bindings(store) koreachi and make korechi, ekhane make a first object diye resolve hocche na.
+//thats why error dicce
+
+
+// but ei make diye korle eita resolve korteche. kono error diche
+// Laravel পুরো dependency tree resolve করে সব object তৈরি করেছে। UserController -> MailService -> Logger -> Config
+// object create hoye asbe : Config -> Logger -> MailService->UserController
+Route::get('/experiments/nest-laravel', function () {
+    app()->make(\App\Experiments\NestedDependency\AppController::class);
+});
