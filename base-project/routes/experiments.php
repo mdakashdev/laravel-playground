@@ -96,3 +96,12 @@ Route::get('/experiments/nest-dependency', function (\App\Experiments\NestedDepe
 Route::get('/experiments/nest-laravel', function () {
     app()->make(\App\Experiments\NestedDependency\AppController::class);
 });
+
+
+
+
+/**
+ * Singleton
+ */
+
+Route::get('/experiments/singleton', [\App\Experiments\Singleton\UserController::class, 'register']);
