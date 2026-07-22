@@ -117,3 +117,17 @@ Route::get('/experiments/singleton-3', function() {
     dump(spl_object_id(resolve(\App\Services\ReportService::class)));
     dump(spl_object_id(app(\App\Services\ReportService::class)));
 });
+
+
+/**
+ * check - how to know laravel, kon service kon service er sathe jabe!!
+ * then solution is provider for bind
+ */
+Route::get('/experiments/provider', function(){
+    // kon service er sathe bind kora ache seta dekhabe.
+    dump(app(\App\Experiments\Provider\PaymentGateway::class));
+});
+
+//test- bind service resolve in dependency service, amra dektechi kivabe laravel jene gelo oitar jonno stripe payment service lagbe
+
+Route::get('/experiments/provider-1', [\App\Experiments\Provider\OrderService::class, 'payment']);
