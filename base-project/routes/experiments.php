@@ -101,7 +101,19 @@ Route::get('/experiments/nest-laravel', function () {
 
 
 /**
+ * Test: self created container
  * Singleton
  */
 
 Route::get('/experiments/singleton', [\App\Experiments\Singleton\UserController::class, 'register']);
+
+/**
+ * Test: in laravel system
+ * check bind and singleton , behaviour object
+ *
+ * resolve, app, and dependency injection diye resolve kora jai.
+ */
+Route::get('/experiments/singleton-3', function() {
+    dump(spl_object_id(resolve(\App\Services\ReportService::class)));
+    dump(spl_object_id(app(\App\Services\ReportService::class)));
+});
