@@ -124,8 +124,10 @@ Route::get('/experiments/singleton-3', function() {
  * then solution is provider for bind
  */
 Route::get('/experiments/provider', function(){
-    // kon service er sathe bind kora ache seta dekhabe.
+    // kon service er sathe bind kora ache seta dekhabe. mane check kora hoyehce object type
     dump(app(\App\Experiments\Provider\PaymentGateway::class));
+    //kon service er sathe kon service bind kora ache, seta paowa jabe
+    dd(app()->getBindings());
 });
 
 //test- bind service resolve in dependency service, amra dektechi kivabe laravel jene gelo oitar jonno stripe payment service lagbe
