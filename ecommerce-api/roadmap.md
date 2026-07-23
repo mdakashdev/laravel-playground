@@ -85,7 +85,7 @@ Laravel welcome page দেখা যাবে।
 * [ ] `php artisan --version` কাজ করছে
 * [ ] Welcome page open হচ্ছে
 
----
+---dd
 
 
 ### ✅ Checklist
