@@ -9,7 +9,7 @@ Project চালু হবে এই services দিয়ে:
 * MySQL 8
 * Redis
 * Mailpit
-test
+
 ---
 
 ## Step 1
@@ -67,9 +67,7 @@ Volumes
 
 ## Step 5
 
-Network
-
-একটি custom bridge network ব্যবহার করবে।
+Network - একটি custom bridge network ব্যবহার করবে।
 
 নাম:
 
@@ -77,23 +75,12 @@ Network
 ecommerce-network
 ```
 
----
+Summary: 
 
-### ✅ Checklist
+- Dockerfile: ami jani na, kivabe dockerfile likhte hoi, keno likhchi but AI er kache theke niye likhe nilam
+- nginx: smae, nginx likhe nilam, just akta jinish jani - index.php te forward korteche
+- docker-compose.yml a : 5 ti service crete korlam and 1ta volumen and 1 ta network
 
-* [ ] `docker-compose.yml` তৈরি হয়েছে
-* [ ] `docker/php/Dockerfile` তৈরি হয়েছে
-* [ ] `docker/nginx/default.conf` তৈরি হয়েছে
-* [ ] ৫টি service define হয়েছে
-* [ ] custom network আছে
-* [ ] MySQL volume আছে
-
----
-
-শেষ হলে শুধু লিখবে:
-
-```text
-Done
-```
-
-আমি structure review করব, তারপর Docker files-এর content step-by-step করব।
+* [ ] File path: `docker/nginx/default.conf`
+* [ ] `root` = `/var/www/html/public`
+* [ ] `fastcgi_pass` = `ecommerce-app:9000`
