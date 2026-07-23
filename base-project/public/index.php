@@ -17,4 +17,6 @@ require __DIR__.'/../vendor/autoload.php';
 /** @var Application $app */
 $app = require_once __DIR__.'/../bootstrap/app.php';
 
+//ekhane application object ceate hocche, aar eitai container
+
 $app->handleRequest(Request::capture());
