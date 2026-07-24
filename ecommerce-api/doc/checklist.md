@@ -57,6 +57,16 @@
 * [ ] `php artisan migrate:status`-এ সব `Ran`
 
 
+## Sprint 0 — Task 7: GitHub Repository
+
+## ✅ Checklist
+
+* [ ] First commit হয়েছে
+* [ ] GitHub repository তৈরি হয়েছে
+* [ ] Code push হয়েছে
+
+## Sprint 0 — Task 8: README
+
 
 ```text
 I can -

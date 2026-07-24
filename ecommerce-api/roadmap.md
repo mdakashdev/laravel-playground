@@ -292,3 +292,4 @@ exit
 ```
 ---
 
+# Sprint 0 — Task 7: GitHub Repository
