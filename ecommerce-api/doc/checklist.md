@@ -73,3 +73,10 @@ I can -
 5 ti service banalam with version same network er under a (like: ecommerce-network) and container name dite pari.
 aar service banale to port dite hobe, kon port a service colbe.
 ```
+
+## Question
+- docker-compose.yml file creat
+
+5 ti service create koro (PHP 8.3 (FPM), Nginx, MySQL 8, Redis, Mailpit) with version (8.3-fpm, latest, 8.4, 7, latest) jara ekoi network er under a thakbe with network type bridge (ecommerce-network) 
+abong service gulor name hobe ecommerce-app, ecommerce-nginx (prefix ecommerce-) etc, Project source mount করবে and MySQL data persistent হবে।
+abong service gulo kon port a colbe host and container ta define korte hobe, container akta db create korbo (db: ecommerce, root-pass- root, user & pass -laravel, secret)

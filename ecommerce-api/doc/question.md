@@ -1,4 +1,10 @@
 # Question
+> 1. amar docker desktop a age theke 4/5 docker ache, seigulo te ki kono conflit hobe?
+
+> 2. ei migrate ta kothai holo? container er vitore , mane amar pc te local a phpmyadmin a kono db thaklo na
+
+> 3. mysql-data name akta volume storage name banalam as like db name, aar projuect mount korar moto, local code er sathe container er code jeivabe mount / sync kore, sei kaj ta service: db: te je volume path dekhae seta boli je, container er moddhe ei path mysql data dau form volume mysql-data theke
+
 
 ## 1. amar docker desktop a age theke 4/5 docker ache, seigulo te ki kono conflit hobe?
 
@@ -138,4 +144,84 @@ docker compose exec db mysql -u laravel -p
 
 **আমার recommendation:** আমরা **Option 1** ব্যবহার করব। এতে database inspect করা সহজ হবে এবং development-এর জন্য standard setup হবে।
 
+## Question 3. mysql-data name akta volume storage name banalam as like db name, aar projuect mount korar moto, local code er sathe container er code jeivabe mount / sync kore, sei kaj ta service: db: te je volume path dekhae seta boli je, container er moddhe ei path mysql data dau form volume mysql-data theke 
+
+হ্যাঁ, আপনার ধারণাটা মোটামুটি ঠিক। শুধু একটু পরিষ্কারভাবে বলি।
+
+```yaml
+services:
+  db:
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
+```
+
+এর অর্থ হলো:
+
+1. **Root level**
+
+   ```yaml
+   volumes:
+     mysql-data:
+   ```
+
+   👉 `mysql-data` নামে একটি Docker volume (স্টোরেজ) তৈরি করো।
+
+2. **Service level**
+
+   ```yaml
+   volumes:
+     - mysql-data:/var/lib/mysql
+   ```
+
+   👉 `mysql-data` volume-টা **container-এর `/var/lib/mysql`** ফোল্ডারে mount করো।
+
+MySQL স্বাভাবিকভাবেই `/var/lib/mysql`-এ তার database file রাখে। তাই MySQL যখন ডেটা লিখবে, সেটা আসলে `mysql-data` volume-এ সংরক্ষিত হবে।
+
+---
+
+### Project mount-এর সাথে তুলনা
+
+**Project source mount:**
+
+```yaml
+volumes:
+  - .:/app
+```
+
+* `.` = আপনার local project folder
+* `/app` = container-এর folder
+
+অর্থাৎ, **Local folder ↔ Container folder** sync হচ্ছে।
+
+---
+
+**MySQL volume:**
+
+```yaml
+volumes:
+  - mysql-data:/var/lib/mysql
+```
+
+* `mysql-data` = Docker-এর managed storage
+* `/var/lib/mysql` = container-এর folder
+
+অর্থাৎ, **Docker Volume ↔ Container folder** connect হচ্ছে।
+
+---
+
+### পার্থক্যটা এক লাইনে
+
+* `.:/app` → **Local folder ↔ Container**
+* `mysql-data:/var/lib/mysql` → **Docker Volume ↔ Container**
+
+তাই আপনার এই কথাটা—
+
+> "container এর মধ্যে এই path-এ mysql-data volume-এর data দাও"
+
+—এটা মূল ধারণা হিসেবে ঠিক। আরও নির্ভুলভাবে বললে হবে:
+
+> **`mysql-data` volume-কে container-এর `/var/lib/mysql` path-এ mount করো, যাতে MySQL-এর সব data ওই volume-এ সংরক্ষিত হয়।**
 
