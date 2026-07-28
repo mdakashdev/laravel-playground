@@ -3,7 +3,11 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/ping', function () {
-    return response()->json([
-        'message' => 'pong'
-    ]);
+    return \App\Support\ApiResponse::success(
+        message: 'pong',
+        data: [
+            'name' => 'p1',
+            'description' => 'd1'
+        ]
+    );
 });
