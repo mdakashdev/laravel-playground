@@ -1,6 +1,6 @@
 # Sprint 1 — Authentication API
 
-## Task 1 — Install & Configure Laravel Sanctum
+# Task 1 — Install & Configure Laravel Sanctum
 
 ### Goal
 
@@ -83,17 +83,6 @@ Container থেকে বের হয়ে আসো।
 ```bash
 exit
 ```
-
----
-
-## ✅ Checklist
-
-* [ ] Sanctum installed
-* [ ] Sanctum migration published
-* [ ] `personal_access_tokens` table created
-* [ ] `HasApiTokens` added to `User` model
-* [ ] No manual auth guard changes
-
 ---
 
 ## Commit
@@ -106,7 +95,7 @@ git push
 
 ---
 
-# Sprint 1 — Task 2: API Versioning
+# Task 2: API Versioning
 
 > **আজকের Goal:** Production-standard API structure তৈরি করা। কোনো authentication logic লিখব না।
 
@@ -215,15 +204,98 @@ git push
 
 ---
 
-### ✅ Checklist
+# Sprint 1 — Task 3: API Response Standard
 
-* [ ] `Api/V1` folder
-* [ ] `AuthController`
-* [ ] `routes/api_v1.php`
-* [ ] `/api/v1` prefix
-* [ ] `/api/v1/ping` works
-* [ ] Commit & Push
+## Goal
 
-শেষ হলে শুধু **Done** লিখবে।
+আজ থেকে **সব API একই JSON format** return করবে।
 
-> **Note:** Sprint 1 থেকে আমি code কম দেব। Requirement দেব, তুমি implement করবে। Review-এর সময় production standard অনুযায়ী feedback দেব। এভাবেই hands-on skill তৈরি হবে।
+---
+
+### Step 1
+
+নিচের folder তৈরি করো:
+
+```text
+app/Support
+```
+
+---
+
+### Step 2
+
+একটি class তৈরি করো:
+
+```text
+app/Support/ApiResponse.php
+```
+
+---
+
+### Step 3
+
+এই class-এর responsibility হবে:
+
+* Success response
+* Error response
+* Message
+* Data
+* Errors
+* HTTP Status Code
+
+> **নিজে implement করবে।**
+
+---
+
+### Step 4
+
+`GET /api/v1/ping` endpoint-কে এই response helper ব্যবহার করে return করো।
+
+Expected response:
+
+```json
+{
+    "success": true,
+    "message": "pong",
+    "data": null
+}
+```
+
+---
+
+### Step 5
+
+Production rules
+
+* ❌ `response()->json()` directly ব্যবহার করবে না Controller-এ।
+* ✅ সব response `ApiResponse` class দিয়ে যাবে।
+
+---
+
+### Verify
+
+```http
+GET http://localhost:8000/api/v1/ping
+```
+
+Expected:
+
+```json
+{
+    "success": true,
+    "message": "pong",
+    "data": null
+}
+```
+
+---
+
+### Commit
+
+```bash
+git add .
+git commit -m "feat(api): add standard api response helper"
+git push
+```
+
+---
