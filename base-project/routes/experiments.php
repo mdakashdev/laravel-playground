@@ -133,3 +133,96 @@ Route::get('/experiments/provider', function(){
 //test- bind service resolve in dependency service, amra dektechi kivabe laravel jene gelo oitar jonno stripe payment service lagbe
 
 Route::get('/experiments/provider-1', [\App\Experiments\Provider\OrderService::class, 'payment']);
+
+
+/**
+ * pipeline
+ */
+
+Route::get('/pipeline', function () {
+
+//use শুধুমাত্র anonymous function (closure) এর জন্য।
+//যদি function-কে variable হিসেবে pass করতে চাও, তাহলে এভাবে করতে পারো: এখানে test1 function-এর নাম string হিসেবে callback হয়ে গেছে।
+//use function capture করে না, variable capture করে।
+
+    $request = "Hello";
+
+    // Middleware 1
+    $middleware1 = function ($request, $next) {
+        echo "Middleware 1 Start<br>";
+
+        $request .= " -> M1";
+
+        $response = $next($request);
+
+//        $response = function ($request) use ($middleware2, $next2) {
+//            return $middleware2($request, $next2);
+//        };
+
+        echo "Middleware 1 End<br>";
+
+        return $response;
+    };
+
+
+
+    // Middleware 2
+    $middleware2 = function ($request, $next) {
+        echo "Middleware 2 Start<br>";
+
+        $request .= " -> M2";
+
+        $response = $next($request);
+//        function ($request) use ($middleware3, $next3) {
+//            return $middleware3($request, $next3);
+//        };
+
+        echo "Middleware 2 End<br>";
+
+        return $response;
+    };
+
+    // Middleware 3
+    $middleware3 = function ($request, $next) {
+        echo "Middleware 3 Start<br>";
+
+        $request .= " -> M3";
+
+        $response = $next($request);
+//        function ($request) use ($controller) {
+//            return $controller($request);
+//        };
+
+        echo "Middleware 3 End<br>";
+
+        return $response;
+    };
+
+    // Controller
+    $controller = function ($request) {
+        echo "Controller<br>";
+
+        return $request . " -> Controller";
+    };
+
+    // Next Closures
+    $next3 = function ($request) use ($controller) {
+        return $controller($request);
+    };
+
+    $next2 = function ($request) use ($middleware3, $next3) {
+        return $middleware3($request, $next3);
+    };
+
+    $next1 = function ($request) use ($middleware2, $next2) {
+        return $middleware2($request, $next2);
+    };
+
+    // Start Pipeline
+    $result = $middleware1($request, $next1);
+
+    // mane $next1 a poroborti middleware and tar poroborti clous
+
+    echo "<hr>";
+    echo "<strong>Final Result:</strong> " . $result;
+});
