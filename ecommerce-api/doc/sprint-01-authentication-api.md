@@ -204,7 +204,7 @@ git push
 
 ---
 
-# Sprint 1 — Task 3: API Response Standard
+# Task 3: API Response Standard
 
 ## Goal
 
@@ -297,5 +297,150 @@ git add .
 git commit -m "feat(api): add standard api response helper"
 git push
 ```
+
+---
+
+
+
+✅ **Review: Approved**
+
+এখন পর্যন্ত architecture clean আছে।
+
+```
+app/
+├── Http/
+│   └── Controllers/
+│       └── Api/
+│           └── V1/
+└── Support/
+    └── ApiResponse.php
+```
+
+এখন থেকে আমরা CRUD শুরু করব না। আগে production foundation শেষ করব।
+
+---
+
+# Task 4: Global Exception Handling
+
+## Goal
+
+Project-এর **সব exception** এক জায়গা থেকে handle হবে।
+
+**Controller, Service, Repository কোথাও `try/catch` লিখবে না** (বিশেষ business case ছাড়া)।
+
+---
+
+## Step 1
+
+Laravel 12-এ exception handling কোথায় configure হয় সেটা identify করো।
+
+> Hint: `app/Exceptions/Handler.php` না-ও হতে পারে।
+
+---
+
+## Step 2
+
+নিচের exception-গুলোর জন্য JSON response implement করো।
+
+| Exception               | HTTP |
+| ----------------------- | ---: |
+| ValidationException     |  422 |
+| AuthenticationException |  401 |
+| AuthorizationException  |  403 |
+| ModelNotFoundException  |  404 |
+| NotFoundHttpException   |  404 |
+| Throwable (fallback)    |  500 |
+
+সব response `ApiResponse::error()` ব্যবহার করবে।
+
+---
+
+## Step 3
+
+**Production rule**
+
+API request হলে JSON return করবে।
+
+Web request হলে Laravel-এর default behavior থাকবে।
+
+---
+
+## Step 4
+
+Testing
+
+নিচের route **temporary** add করো:
+
+```text
+GET /api/v1/error-test
+```
+
+Route-এর ভিতরে:
+
+```
+throw new Exception('Test Exception');
+```
+
+Expected Response:
+
+```json
+{
+    "success": false,
+    "message": "Internal Server Error",
+    "data": null,
+    "errors": null
+}
+```
+
+Status:
+
+```text
+500
+```
+
+---
+
+## Step 5
+
+Testing শেষ হলে `error-test` route delete করে দিও।
+
+Testing route production code-এ থাকবে না।
+
+---
+
+## Commit
+
+```bash
+git add .
+git commit -m "feat(core): add global api exception handling"
+git push
+```
+
+---
+
+## 🔴 Change Request (Required)
+
+`500` response-এ **raw exception message** return করবে না।
+
+❌ এটা করবে না:
+
+```json
+{
+  "message": "SQLSTATE[42S02]..."
+}
+```
+
+✅ Production-এ:
+
+```json
+{
+  "success": false,
+  "message": "Internal Server Error",
+  "data": null,
+  "errors": null
+}
+```
+
+Debug information শুধুমাত্র log-এ যাবে, response-এ নয়।
 
 ---
