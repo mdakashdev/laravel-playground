@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 
 Route::get('/ping', function () {
     return \App\Support\ApiResponse::success(
@@ -10,4 +11,10 @@ Route::get('/ping', function () {
             'description' => 'd1'
         ]
     );
+});
+
+Route::get('/error-test', function () {
+    throw ValidationException::withMessages([
+        'email' => ['Email required']
+    ]);
 });
