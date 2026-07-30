@@ -6,6 +6,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
@@ -51,11 +52,14 @@ class ApiExceptionRenderer
                 statusCode: 404,
             ),
 
-            default =>
-            ApiResponse::error(
-                message: 'Internal Server Error',
-                statusCode: 500,
-            ),
+            default => (function () use ($e) {
+                Log::error($e);
+
+                return ApiResponse::error(
+                    message: 'Internal Server Error',
+                );
+            })(),
+
         };
 
     }

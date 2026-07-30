@@ -18,3 +18,7 @@ Route::get('/error-test', function () {
         'email' => ['Email required']
     ]);
 });
+
+Route::get('/error-500', function () {
+    throw new Exception('500');
+});
