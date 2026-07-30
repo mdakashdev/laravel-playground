@@ -5,6 +5,10 @@
 
 > 3. mysql-data name akta volume storage name banalam as like db name, aar projuect mount korar moto, local code er sathe container er code jeivabe mount / sync kore, sei kaj ta service: db: te je volume path dekhae seta boli je, container er moddhe ei path mysql data dau form volume mysql-data theke
 
+> 4. Laravel 12-এ exception handling কোথায় configure হয় সেটা identify করো ?
+
+> 5. tumi ki globaly api exception handling korte paro?
+
 
 ## 1. amar docker desktop a age theke 4/5 docker ache, seigulo te ki kono conflit hobe?
 
