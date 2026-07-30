@@ -6,9 +6,24 @@
   - সব API একই JSON format return করবে।
 - ✅ Global Exception Handling
   - Project-এর সব exception এক জায়গা থেকে handle হবে।
+- 🐝 Authentication Database Design
+  - Authentication-এর জন্য production-ready schema তৈরি করা।
 
 
 # Key Point
+
+Task - 4: Global Exception Handling
+- নতুন migration তৈরি
+- Migration run করো।
+- db check koro - php artisan db:show
+- docker file change kore, rebuild dite perechi
+
+```text
+akta existing table a, single migration diye multiple field add kora jai.
+table check korar jonno - php artisan db:table users
+```
+
+---
 
 Task - 4: Global Exception Handling 
 - Project-এর সব exception এক জায়গা থেকে handle হবে।
@@ -99,4 +114,14 @@ HasApiTokens model a add koro, exit from container.
 * [ ] Web routes keep default behavior
 * [ ] `error-test` verified
 * [ ] Temporary route removed
+* [ ] Commit & Push
+
+## Task 5: Authentication Database Design
+
+* [ ] Migration created
+* [ ] `uuid`
+* [ ] `phone`
+* [ ] `avatar`
+* [ ] `status`
+* [ ] Migration executed
 * [ ] Commit & Push

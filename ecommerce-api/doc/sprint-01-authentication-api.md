@@ -444,3 +444,86 @@ git push
 Debug information শুধুমাত্র log-এ যাবে, response-এ নয়।
 
 ---
+
+
+# Sprint 1 — Task 5: Authentication Database Design
+
+> **আজ কোনো API লিখব না।** শুধু database design।
+
+## Goal
+
+Authentication-এর জন্য production-ready schema তৈরি করা।
+
+---
+
+### Step 1
+
+`users` table review করো।
+
+শুধু এই fields রাখবে:
+
+* name
+* email
+* password
+* email_verified_at
+* remember_token
+* timestamps
+
+> Default Laravel migration-এর বাইরে **কিছু add করবে না**।
+
+---
+
+### Step 2
+
+নতুন migration তৈরি করো:
+
+```bash
+docker compose exec app php artisan make:migration add_profile_fields_to_users_table --table=users
+```
+
+---
+
+### Step 3
+
+নিচের fields add করো:
+
+| Column | Type                     |
+| ------ | ------------------------ |
+| uuid   | uuid (unique)            |
+| phone  | string, nullable, unique |
+| avatar | string, nullable         |
+| status | boolean, default true    |
+
+> **`is_active` নয়, `status` ব্যবহার করো।**
+
+---
+
+### Step 4
+
+Migration run করো।
+
+```bash
+docker compose exec app php artisan migrate
+```
+
+---
+
+### Step 5
+
+Verify
+
+```bash
+docker compose exec app php artisan db:show
+```
+
+---
+
+### Commit
+
+```bash
+git add .
+git commit -m "feat(auth): extend users table"
+git push
+```
+
+---
