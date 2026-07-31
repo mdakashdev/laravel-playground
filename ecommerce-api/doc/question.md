@@ -11,6 +11,16 @@
 
 > 6. akta migraton create koro, info uuid [uuid (unique)], phone [string, nullable, unique], avatar [string, nullable], status [boolean, default true]
 
+> 7. validation rules likho nicher info diye 
+
+```text
+name ( required, string, min:3, max:100 )
+email (required, email, max:255, unique:users,email)
+password (required, confirmed, min:8, max:255)
+phone   (nullable, string, unique:users,phone)
+avatar  (prohibited)
+```
+
 
 ## 1. amar docker desktop a age theke 4/5 docker ache, seigulo te ki kono conflit hobe?
 

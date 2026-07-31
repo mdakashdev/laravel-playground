@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AuthController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 
@@ -22,3 +23,10 @@ Route::get('/error-test', function () {
 Route::get('/error-500', function () {
     throw new Exception('500');
 });
+
+
+/**
+ * register validation test
+ */
+
+Route::post('/register-test', [AuthController::class, 'register']);

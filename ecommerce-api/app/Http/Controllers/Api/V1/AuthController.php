@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\Auth\RegisterRequest;
 use App\Support\ApiResponse;
-use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    public function register()
+    public function register(RegisterRequest $request)
     {
-        return ApiResponse::success('Pending implementation');
+        return ApiResponse::success(
+            'Validation passed',
+            data: $request->validated()
+        );
     }
 
     public function login()
