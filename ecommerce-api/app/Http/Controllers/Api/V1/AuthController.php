@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Auth\RegisterRequest;
+use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Http\Resources\Api\V1\UserResource;
 use App\Services\Auth\AuthService;
 use App\Support\ApiResponse;
@@ -28,9 +29,20 @@ class AuthController extends Controller
         );
     }
 
-    public function login()
+    public function login(LoginRequest $loginRequest)
     {
-        return ApiResponse::success('Pending implementation');
+
+        $user = $this->authService->login(
+            $loginRequest->validated()
+        );
+
+        return ApiResponse::success(
+            'Login successful.',
+            [
+                'user' => new UserResource($user['user']),
+                'token' => $user['token']
+            ]
+        );
     }
 
     public function logout()
