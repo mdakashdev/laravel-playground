@@ -29,4 +29,4 @@ Route::get('/error-500', function () {
  * register validation test
  */
 
-Route::post('/register-test', [AuthController::class, 'register']);
+Route::post('/register', [AuthController::class, 'register']);

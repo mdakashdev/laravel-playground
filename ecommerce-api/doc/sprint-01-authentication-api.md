@@ -445,8 +445,7 @@ Debug information শুধুমাত্র log-এ যাবে, response-এ
 
 ---
 
-
-# Sprint 1 — Task 5: Authentication Database Design
+# Task 5: Authentication Database Design
 
 > **আজ কোনো API লিখব না।** শুধু database design।
 
@@ -523,6 +522,489 @@ docker compose exec app php artisan db:show
 ```bash
 git add .
 git commit -m "feat(auth): extend users table"
+git push
+```
+
+---
+
+
+
+
+
+## ✅ Review: **Pass (9/10)**
+
+ভালো progress। Foundation ধীরে ধীরে production-ready হচ্ছে।
+
+---
+
+## Review Notes
+
+### ✅ Good
+
+* `uuid` ✔️
+* `phone` nullable + unique ✔️
+* `avatar` nullable ✔️
+* `status` default `true` ✔️
+
+---
+
+## 🔴 Change Request (Required)
+
+`uuid` **database default** দিয়ে generate করবে না।
+
+আমরা পরে `UserObserver` দিয়ে create-এর সময় UUID generate করব।
+
+**Rule:**
+
+* Database → শুধু column define করবে
+* Business logic → Observer
+
+এটা maintain করব পুরো project-এ।
+
+---
+
+## 🔴 Change Request (Required)
+
+`status`-এ magic number ব্যবহার করবে না।
+
+পরে আমরা:
+
+```php
+UserStatus::ACTIVE
+UserStatus::INACTIVE
+```
+
+বা Enum ব্যবহার করব।
+
+এখন boolean ঠিক আছে, কিন্তু roadmap-এ এটা পরে refactor হবে।
+
+---
+
+# Task 6: User Model Preparation
+
+> এখন আমরা `User` model production-ready করব। এখনও Register/Login লিখব না।
+
+## Goal
+
+`User` model clean এবং future-proof করা।
+
+---
+
+### Step 1
+
+`fillable` update করো।
+
+শুধু এই fields থাকবে:
+
+```text
+name
+email
+password
+phone
+avatar
+status
+uuid
+```
+
+---
+
+### Step 2
+
+`hidden` verify করো।
+
+শুধু:
+
+```text
+password
+remember_token
+```
+
+---
+
+### Step 3
+
+`casts` verify/update করো।
+
+```text
+email_verified_at => datetime
+password => hashed
+status => boolean
+```
+
+---
+
+### Step 4
+
+`HasApiTokens` trait আছে কিনা verify করো।
+
+এবং Laravel-এর default traits ছাড়া অতিরিক্ত trait add করবে না।
+
+---
+
+### Step 5
+
+Model constants বা business method **এখন add করবে না**।
+
+এখন শুধু model preparation।
+
+---
+
+## Commit
+
+```bash
+git add .
+git commit -m "refactor(auth): prepare user model"
+git push
+```
+---
+
+# Task 7: Registration Architecture
+
+> **আজও Register API লিখব না।** শুধু architecture তৈরি করব।
+
+## Goal
+
+Production-standard folder structure তৈরি করা।
+
+---
+
+## Step 1
+
+নিচের folders তৈরি করো:
+
+```text
+app/
+├── Actions/
+│   └── Auth/
+├── Http/
+│   ├── Requests/
+│   │   └── Api/
+│   │       └── V1/
+│   │           └── Auth/
+│   └── Resources/
+│       └── Api/
+│           └── V1/
+├── Services/
+│   └── Auth/
+```
+
+---
+
+## Step 2
+
+এই files তৈরি করো।
+
+### Action
+
+```bash
+docker compose exec app php artisan make:class Actions/Auth/RegisterUserAction
+```
+
+### Service
+
+```bash
+docker compose exec app php artisan make:class Services/Auth/AuthService
+```
+
+### Form Request
+
+```bash
+docker compose exec app php artisan make:request Api/V1/Auth/RegisterRequest
+```
+
+### API Resource
+
+```bash
+docker compose exec app php artisan make:resource Api/V1/UserResource
+```
+
+---
+
+## Step 3
+
+`AuthController`-এ এখন **কোনো logic লিখবে না**।
+
+শুধু empty methods তৈরি করো:
+
+```text
+register
+login
+logout
+me
+refresh
+forgotPassword
+resetPassword
+verifyEmail
+resendVerification
+```
+
+সব method আপাতত:
+
+```php
+return ApiResponse::success('Pending implementation');
+```
+
+---
+
+## Step 4
+
+কোনো route add করবে না।
+
+শুধু architecture prepare করবে।
+
+---
+
+## Commit
+
+```bash
+git add .
+git commit -m "chore(auth): prepare authentication architecture"
+git push
+```
+
+---
+
+# Task 8: Register Validation
+
+## Goal
+
+User registration-এর validation complete করা।
+
+**আজ database-এ কিছু save হবে না।**
+
+---
+
+## Step 1
+
+`RegisterRequest`-এ authorization update করো।
+
+```php
+public function authorize(): bool
+{
+    return true;
+}
+```
+
+---
+
+## Step 2
+
+Validation rules implement করো।
+
+| Field    | Rules                                        |
+| -------- | -------------------------------------------- |
+| name     | required, string, min:3, max:100             |
+| email    | required, email, max:255, unique:users,email |
+| password | required, confirmed, min:8, max:255          |
+| phone    | nullable, string, unique:users,phone         |
+| avatar   | prohibited                                   |
+
+> **`avatar` registration-এ allow করবে না।**
+
+---
+
+## Step 3
+
+Custom validation messages **add করবে না**।
+
+Laravel default messages ব্যবহার করব।
+
+---
+
+## Step 4
+
+Custom attributes **add করবে না**।
+
+---
+
+## Step 5
+
+Temporary testing route add করো:
+
+```
+POST /api/v1/register-test
+```
+
+Controller থেকে শুধু:
+
+```php
+return ApiResponse::success(
+    'Validation passed',
+    $request->validated()
+);
+```
+
+এখনো database save করবে না।
+
+---
+
+## Step 6
+
+Postman দিয়ে test করো।
+
+### Valid Request
+
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123",
+  "password_confirmation": "password123"
+}
+```
+
+Expected:
+
+* **200 OK**
+* `Validation passed`
+
+---
+
+### Invalid Request
+
+```json
+{
+  "name": "",
+  "email": "abc",
+  "password": "123"
+}
+```
+
+Expected:
+
+* **422**
+* Standard `ApiResponse` format
+
+---
+
+## Commit
+
+```bash
+git add .
+git commit -m "feat(auth): implement registration validation"
+git push
+```
+
+---
+
+# Task 9: Register Action (Database Save)
+
+> এখান থেকে user database-এ save হবে।
+
+## Goal
+
+Registration logic শুধু `RegisterUserAction`-এ থাকবে।
+
+---
+
+## Step 1
+
+`RegisterUserAction`-এ একটি public method তৈরি করো:
+
+```text
+execute(array $data): User
+```
+
+Return type অবশ্যই `User` হবে।
+
+---
+
+## Step 2
+
+এই method-এর দায়িত্ব:
+
+* User create করা
+* Password hash হবে (Laravel-এর hashed cast ব্যবহার করবে, `Hash::make()` করবে না)
+* `status = true`
+* `uuid` generate করা
+* `avatar = null`
+
+> **UUID এখন `Str::uuid()` দিয়ে generate করো।** পরে আমরা এটা `Observer`-এ move করব।
+
+---
+
+## Step 3
+
+Action-এর ভিতরে **response return করবে না**।
+
+শুধু `User` model return করবে।
+
+---
+
+## Step 4
+
+Controller, Service, Route — কোনো পরিবর্তন করবে না।
+
+আজ শুধু `RegisterUserAction` implement করবে।
+
+---
+
+## Commit
+
+```bash
+git add .
+git commit -m "feat(auth): implement register user action"
+git push
+```
+
+---
+
+# Task 10: AuthService
+
+## Goal
+
+Controller আর Action-এর মাঝে orchestration/ অর্কেস্ট্রেশন layer তৈরি করা।
+
+---
+
+## Step 1
+
+`AuthService`-এ constructor injection ব্যবহার করো।
+
+Inject করবে:
+
+```text
+RegisterUserAction
+```
+
+---
+
+## Step 2
+
+একটি method implement করো:
+
+```php
+register(array $data): User
+```
+
+---
+
+## Step 3
+
+এই method-এর ভিতরে শুধু:
+
+* `RegisterUserAction` call করবে।
+* `User` return করবে।
+
+**আর কোনো logic থাকবে না।**
+
+---
+
+## Step 4
+
+Response return করবে না।
+
+Exception catch করবে না।
+
+Transaction ব্যবহার করবে না।
+
+---
+
+## Commit
+
+```bash
+git add .
+git commit -m "feat(auth): implement auth service"
 git push
 ```
 
