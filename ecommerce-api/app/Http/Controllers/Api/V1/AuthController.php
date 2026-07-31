@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Auth\RegisterRequest;
+use App\Http\Resources\Api\V1\UserResource;
 use App\Services\Auth\AuthService;
 use App\Support\ApiResponse;
 
@@ -21,8 +22,9 @@ class AuthController extends Controller
         );
 
         return ApiResponse::success(
-            'Validation passed',
-            data: $user
+            message: 'User registered successfully.',
+            data: new UserResource($user),
+            statusCode: 201
         );
     }
 
