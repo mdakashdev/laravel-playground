@@ -35,4 +35,9 @@ class AuthService
             'token' => $token
         ];
     }
+
+    public function me(User $user): User
+    {
+        return $user;
+    }
 }

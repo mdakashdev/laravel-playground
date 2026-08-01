@@ -8,6 +8,7 @@ use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Http\Resources\Api\V1\UserResource;
 use App\Services\Auth\AuthService;
 use App\Support\ApiResponse;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -50,9 +51,14 @@ class AuthController extends Controller
         return ApiResponse::success('Pending implementation');
     }
 
-    public function me()
+    public function me(Request $request)
     {
-        return ApiResponse::success('Pending implementation');
+        $user = $this->authService->me($request->user());
+
+        return ApiResponse::success(
+            'User profile fetched successfully.',
+            new UserResource($user)
+        );
     }
 
     public function refresh()
