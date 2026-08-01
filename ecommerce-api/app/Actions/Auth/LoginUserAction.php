@@ -5,6 +5,7 @@ namespace App\Actions\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Nette\Schema\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class LoginUserAction
 {
@@ -18,6 +19,11 @@ class LoginUserAction
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
+        }
+
+        // Login-এর আগে `status` check করো।
+        if (! $user['status']) {
+            throw new HttpException(403, 'Your account is inactive.');
         }
 
         // User return করবে

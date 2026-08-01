@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -50,6 +51,12 @@ class ApiExceptionRenderer
             ApiResponse::error(
                 message: 'Route Not Found',
                 statusCode: 404,
+            ),
+
+            $e instanceof HttpException =>
+            ApiResponse::error(
+                message: 'Your account is inactive',
+                statusCode: 403
             ),
 
             default => (function () use ($e) {
