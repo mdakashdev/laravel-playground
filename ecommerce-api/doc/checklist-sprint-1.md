@@ -1,3 +1,18 @@
+# 🎯 Sprint 1 Completed
+
+## Features Completed
+
+* ✅ API Versioning
+* ✅ Standard API Response
+* ✅ Global Exception Handling
+* ✅ User Model
+* ✅ Register API
+* ✅ Login API
+* ✅ Me API
+* ✅ Logout API
+* ✅ Sanctum Authentication
+* ✅ Clean Architecture
+
 # Sprint - 1 Status
 
 - ✅ Install & Configure Laravel Sanctum
@@ -15,11 +30,18 @@
 - ✅ Register Validation
 - ✅ Register Action (Database Save)
   - `RegisterUserAction`-এ একটি public method তৈরি করো
-- AuthService
+- ✅ AuthService
   - `AuthService`-এ constructor injection ব্যবহার করো। Inject করবে: RegisterUserAction
   - ami jei dependency (RegisterUserAction) inject korbo setar jonno akta service create korte hobe. se service er through te inject hobe
   - Controller আর Action-এর মাঝে orchestration/ অর্কেস্ট্রেশন layer তৈরি করা।
-
+- ✅ Complete Register API
+  - আজ প্রথম production-ready endpoint complete করব। শেষে user database-এ save হবে এবং `UserResource` return করবে।
+- ✅ Task 12: Login API
+  - Email + Password দিয়ে login করে **Sanctum Personal Access Token** return করবে।
+- Get Authenticated User (`/me`)
+  - Authenticated user-এর profile return করবে।
+- Logout API
+  -Authenticated user-এর current access token revoke করা।
 
 
 ✅ Task 1  Sanctum
@@ -31,19 +53,82 @@
 ✅ Task 7  Authentication Architecture
 ✅ Task 8  Registration Validation
 ✅ Task 9  RegisterUserAction
+✅ Task 10 AuthService
+✅ Task 11 Register API
+✅ Task 12 Login API
+✅ Task 13 Me API
+✅ Task 14 Logout API
 
 
-
-Controller
-↓
-AuthService
-↓
-RegisterUserAction
-↓
-User::create()
+> তুমি এখন production-style Authentication module-এর foundation তৈরি করে ফেলেছো।
 
 
 # Key Point
+
+Task - 14:
+
+Authenticated user-এর current access token revoke করা।
+
+amara logout korbo, so token obossoi revoke kore deya,
+logout er somai o token diye in korte hobe and middleware use korte hobe, karon ami toke revoke korte cai.
+
+ami age route er endpoint a middleware auth:sanctum use korechilam for single thinking
+but jokhon same middleware multiple endpoint a lagbe tokhon eita group a niye aste hobe - route group
+
+Task - 13:
+
+Authenticated user-এর profile return করবে।
+obossoi auth:sanctum middleware use korbo.
+
+jehetu authentication hote hobe, ta /me endpont er sathe login kora user er token lagbe ja postman a pass korte hobe
+
+tarmane age login korte hobe tahole token pabo, then sei token niye authenticated endpoint call korte hobe
+
+note: laravel Request a login user er data pauwa jai. method user()
+
+
+Task - 12: 
+
+Email + Password দিয়ে login করে **Sanctum Personal Access Token** return করবে।
+
+Create Login Request, and validation rules set for email and pass
+create LoginUserAction action and execute method
+authservice a loginUserAction inject kore, method create kora.
+AuthController a implemet kore login ke call kora.
+Flow: LoginRequest -> validated() -> AuthService::login() -> UserResource -> ApiResponse
+Expected: 200, User, Token
+
+Wrong Password and Unknown Email er jonno =  401 Unauthorized ,Standard `ApiResponse`
+
+note: change-required status false check korechi.
+
+
+
+Task - 11:
+
+আজ প্রথম production-ready endpoint complete করব। শেষে user database-এ save হবে এবং `UserResource` return করবে।
+
+Step 1 — `UserResource`, `toArray()` implement করো।
+
+শুধু এই fields return করবে: id, uuid, name, email, phone etc
+
+controller a implement flow :
+
+```
+RegisterRequest
+        ↓
+validated()
+        ↓
+AuthService::register()
+        ↓
+UserResource
+        ↓
+ApiResponse::success()
+```
+
+Duplicate Email Test , একই email দিয়ে আবার request পাঠাও। Expected: **422*** Standard `ApiResponse`
+
+- HTTP Status Register success হলে অবশ্যই: 201 Created 200` নয়।
 
 Task - 10:
 
@@ -297,4 +382,48 @@ HasApiTokens model a add koro, exit from container.
 * [ ] No response
 * [ ] No try/catch
 * [ ] No transaction
+* [ ] Commit & Push
+
+# Task 11: Complete Register API
+
+* [ ] `UserResource` implemented
+* [ ] `AuthController::register()` implemented
+* [ ] `/api/v1/register` works
+* [ ] User saved
+* [ ] HTTP 201 returned
+* [ ] Duplicate email returns 422
+* [ ] Commit & Push
+
+# Task 12: Login API
+
+
+* [ ] `LoginRequest`
+* [ ] `LoginUserAction`
+* [ ] `AuthService::login()`
+* [ ] Token created
+* [ ] `POST /login`
+* [ ] 200 Success
+* [ ] 401 Invalid credentials
+* [ ] Commit & Push
+
+
+# Task 13: Get Authenticated User (`/me`)
+
+* [ ] `/me` route
+* [ ] `auth:sanctum` middleware
+* [ ] `AuthService::me()`
+* [ ] `AuthController::me()`
+* [ ] `UserResource`
+* [ ] 401 without token
+* [ ] 200 with token
+* [ ] Commit & Push
+
+## Task 14 Logout API
+
+* [ ] `/logout` route
+* [ ] `auth:sanctum`
+* [ ] `AuthService::logout()`
+* [ ] Current token revoked
+* [ ] `200 OK`
+* [ ] Old token invalid
 * [ ] Commit & Push

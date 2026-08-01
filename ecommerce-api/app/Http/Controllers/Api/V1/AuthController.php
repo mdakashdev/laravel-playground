@@ -46,9 +46,13 @@ class AuthController extends Controller
         );
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        return ApiResponse::success('Pending implementation');
+        $this->authService->logout($request->user());
+
+        return ApiResponse::success(
+            'Logged out successfully.'
+        );
     }
 
     public function me(Request $request)

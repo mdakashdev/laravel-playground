@@ -1009,3 +1009,613 @@ git push
 ```
 
 ---
+
+# Task 11: Complete Register API
+
+## Goal
+
+আজ প্রথম production-ready endpoint complete করব।
+
+শেষে user database-এ save হবে এবং `UserResource` return করবে।
+
+---
+
+## Step 1 — `UserResource`
+
+`toArray()` implement করো।
+
+শুধু এই fields return করবে:
+
+```text
+id
+uuid
+name
+email
+phone
+avatar
+status
+email_verified_at
+created_at
+```
+
+⚠️ `password`, `remember_token` বা অন্য internal field return করবে না।
+
+---
+
+## Step 2 — `AuthService`
+
+`register()` method update করো।
+
+* `RegisterUserAction` call করবে।
+* `User` return করবে।
+
+(এটা আগেই করা আছে, verify করে নাও।)
+
+---
+
+## Step 3 — `AuthController`
+
+`register()` method implement করো।
+
+Flow:
+
+```
+RegisterRequest
+        ↓
+validated()
+        ↓
+AuthService::register()
+        ↓
+UserResource
+        ↓
+ApiResponse::success()
+```
+
+Response message:
+
+```text
+User registered successfully.
+```
+
+---
+
+## Step 4 — Route
+
+`routes/api_v1.php`
+
+```http
+POST /api/v1/register
+```
+
+---
+
+## Step 5 — Test
+
+### Request
+
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123",
+  "password_confirmation": "password123"
+}
+```
+
+### Expected
+
+**HTTP 201**
+
+```json
+{
+  "success": true,
+  "message": "User registered successfully.",
+  "data": {
+    "id": 1,
+    "uuid": "...",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "phone": null,
+    "avatar": null,
+    "status": true,
+    "email_verified_at": null,
+    "created_at": "..."
+  }
+}
+```
+
+---
+
+## Step 6 — Duplicate Email Test
+
+একই email দিয়ে আবার request পাঠাও।
+
+Expected:
+
+* **422**
+* Standard `ApiResponse`
+
+---
+
+## Commit
+
+```bash
+git add .
+git commit -m "feat(auth): implement user registration"
+git push
+```
+
+---
+
+# Task 12: Login API
+
+> এবার Login implement করব। এটা Register-এর মতোই production flow follow করবে।
+
+## Goal
+
+Email + Password দিয়ে login করে **Sanctum Personal Access Token** return করবে।
+
+---
+
+## Step 1
+
+Create Request
+
+```bash
+docker compose exec app php artisan make:request Api/V1/Auth/LoginRequest
+```
+
+---
+
+## Step 2
+
+Validation Rules
+
+| Field    | Rules            |
+| -------- | ---------------- |
+| email    | required, email  |
+| password | required, string |
+
+---
+
+## Step 3
+
+Create Action
+
+```bash
+docker compose exec app php artisan make:class Actions/Auth/LoginUserAction
+```
+
+Method:
+
+```php
+execute(array $credentials): User
+```
+
+Responsibilities:
+
+* User খুঁজবে email দিয়ে
+* Password verify করবে
+* Invalid credentials হলে exception throw করবে
+* User return করবে
+
+> ❌ Response return করবে না।
+
+---
+
+## Step 4
+
+`AuthService`
+
+নতুন method:
+
+```php
+login(array $credentials): array
+```
+
+Responsibilities:
+
+* `LoginUserAction` call করবে
+* Sanctum token create করবে
+
+Token name:
+
+```text
+auth_token
+```
+
+Return:
+
+```php
+[
+    'user' => $user,
+    'token' => $token,
+]
+```
+
+---
+
+## Step 5
+
+`AuthController`
+
+নতুন `login()` implement করো।
+
+Flow:
+
+```text
+LoginRequest
+      ↓
+validated()
+      ↓
+AuthService::login()
+      ↓
+UserResource
+      ↓
+ApiResponse
+```
+
+Response:
+
+```json
+{
+  "success": true,
+  "message": "Login successful.",
+  "data": {
+    "user": { },
+    "token": "..."
+  }
+}
+```
+
+Status:
+
+```http
+200 OK
+```
+
+---
+
+## Step 6
+
+Route
+
+```http
+POST /api/v1/login
+```
+
+---
+
+## Step 7
+
+Testing
+
+### ✅ Valid Credentials
+
+Expected:
+
+* 200
+* User
+* Token
+
+### ✅ Wrong Password
+
+Expected:
+
+* 401 Unauthorized
+* Standard `ApiResponse`
+
+### ✅ Unknown Email
+
+Expected:
+
+* 401 Unauthorized
+* Standard `ApiResponse`
+
+---
+
+## Commit
+
+```bash
+git add .
+git commit -m "feat(auth): implement login api"
+git push
+```
+
+### 🔧 Required Change
+
+Login-এর আগে `status` check করো।
+
+যদি:
+
+```php
+status = false
+```
+
+তাহলে login allow করবে না।
+
+Response:
+
+```http
+403 Forbidden
+```
+
+Message:
+
+```text
+Your account is inactive.
+```
+
+এটা এখন add করে দিও।
+
+🎯 Why we're doing this
+
+পরবর্তীতে Admin কোনো user disable করলে login automatically block হবে। পরে আর code পরিবর্তন করতে হবে না।
+
+---
+
+# Task 13: Get Authenticated User (`/me`)
+
+## Goal
+
+Authenticated user-এর profile return করবে।
+
+---
+
+## Step 1
+
+Route
+
+```http
+GET /api/v1/me
+```
+
+Middleware:
+
+```text
+auth:sanctum
+```
+
+---
+
+## Step 2
+
+`AuthService`
+
+Method:
+
+```php
+me(User $user): User
+```
+
+বর্তমানে শুধু received user return করবে।
+
+---
+
+## Step 3
+
+`AuthController`
+
+Implement:
+
+```text
+me()
+```
+
+Flow:
+
+```text
+auth:sanctum
+      ↓
+$request->user()
+      ↓
+AuthService::me()
+      ↓
+UserResource
+      ↓
+ApiResponse
+```
+
+---
+
+## Step 4
+
+Response
+
+```http
+200 OK
+```
+
+```json
+{
+  "success": true,
+  "message": "User profile fetched successfully.",
+  "data": {}
+}
+```
+
+---
+
+## Step 5
+
+Testing
+
+### ✅ Without Token
+
+Expected:
+
+```http
+401 Unauthorized
+```
+
+---
+
+### ✅ With Valid Token
+
+Header:
+
+```http
+Authorization: Bearer YOUR_TOKEN
+```
+
+Expected:
+
+```http
+200 OK
+```
+
+User information return হবে।
+
+---
+
+## Commit
+
+```bash
+git add .
+git commit -m "feat(auth): implement authenticated user profile endpoint"
+git push
+```
+
+---
+
+## 🎯 Why we're doing this
+
+এখন Frontend (Vue/Nuxt) login করার পর প্রথম call হবে:
+
+```text
+POST /login
+        ↓
+Receive Token
+        ↓
+GET /me
+        ↓
+Store User Information
+```
+
+এই flow আমরা পুরো project-এ follow করব।
+
+---
+
+# Task 14: Logout API
+
+## Goal
+
+Authenticated user-এর current access token revoke করা।
+
+---
+
+## Step 1
+
+Route
+
+```http
+POST /api/v1/logout
+```
+
+Middleware:
+
+```text
+auth:sanctum
+```
+
+---
+
+## Step 2
+
+`AuthService`
+
+Implement:
+
+```php
+logout(User $user): void
+```
+
+Responsibilities:
+
+* Current access token revoke করবে।
+
+> শুধু **current token** delete করবে, সব token নয়।
+
+---
+
+## Step 3
+
+`AuthController`
+
+Flow:
+
+```text
+auth:sanctum
+      ↓
+$request->user()
+      ↓
+AuthService::logout()
+      ↓
+ApiResponse
+```
+
+Response:
+
+```json
+{
+  "success": true,
+  "message": "Logged out successfully.",
+  "data": null
+}
+```
+
+Status:
+
+```http
+200 OK
+```
+
+---
+
+## Step 4
+
+Testing
+
+### Request
+
+```http
+POST /api/v1/logout
+Authorization: Bearer YOUR_TOKEN
+```
+
+Expected:
+
+* **200 OK**
+
+---
+
+### Verify
+
+একই token দিয়ে:
+
+```http
+GET /api/v1/me
+```
+
+Expected:
+
+```http
+401 Unauthorized
+```
+
+---
+
+## Commit
+
+```bash
+git add .
+git commit -m "feat(auth): implement logout api"
+git push
+```
+
+---
+
+
+> তুমি এখন production-style Authentication module-এর foundation তৈরি করে ফেলেছো।
+
+---
