@@ -16,3 +16,10 @@ Route::get('/middleware-order', function () {
     'secondM',
     'thirdM'
 ]);
+
+
+// throttle check / test
+
+Route::get('/throttle', function () {
+    return "many request";
+})->middleware('throttle: 5,1'); // 1 min = 5 request
