@@ -19,7 +19,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'checkAge' =>  \App\Http\Middleware\CheckAge::class
+            'checkAge' =>  \App\Http\Middleware\CheckAge::class,
+            'firstM' => \App\Http\Middleware\FirstMiddleware::class,
+            'secondM' => \App\Http\Middleware\SecondMiddleware::class,
+            'thirdM' => \App\Http\Middleware\ThirdMiddleware::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
