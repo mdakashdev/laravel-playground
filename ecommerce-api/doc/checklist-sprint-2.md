@@ -44,6 +44,17 @@
 * [ ] `email_verified_at` updated
 * [ ] Commit & Push
 
+# Task 3 (Updated): Verify Email API
+
+* [ ] `VerifyEmailAction`
+* [ ] Hash validation
+* [ ] `markEmailAsVerified()`
+* [ ] `AuthService::verifyEmail()`
+* [ ] Controller updated
+* [ ] Route without `auth:sanctum`
+* [ ] Success test
+* [ ] Invalid hash test
+* [ ] Commit & Push
 
 # Draft
 
@@ -54,3 +65,10 @@
 * Verification link generate হয়েছে ✔️
 - genereate email er jonno - route lagbe- sei router er akta rule ache - middleware signed and route-name use korte hobe `verification.verify`
   - age temp akta use kortechilam, now nije authController a method use korlam aar serviec use krlam bash
+
+- got one error, error detect form log file - Call to a member function getKey() on null `EmailVerificationRequest.php:18`
+
+`EmailVerificationRequest` internally ধরে নেয় যে user authenticated (`web` guard)।
+ কিন্তু আমরা **API + Sanctum Token Authentication** করছি। Mailpit-এর verification link browser থেকে open হলে কোনো Bearer Token যায় না। তাই user authenticate হয় না।
+
+---

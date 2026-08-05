@@ -4,8 +4,8 @@ namespace App\Services\Auth;
 
 use App\Actions\Auth\LoginUserAction;
 use App\Actions\Auth\RegisterUserAction;
+use App\Actions\Auth\VerifyEmailAction;
 use App\Models\User;
-use Illuminate\Auth\Events\Verified;
 
 class AuthService
 {
@@ -14,7 +14,8 @@ class AuthService
      */
     public function __construct(
         protected RegisterUserAction $registerUserAction,
-        protected LoginUserAction $loginUserAction
+        protected LoginUserAction $loginUserAction,
+        protected VerifyEmailAction $verifyEmailAction
     ) {
     }
 
@@ -51,24 +52,7 @@ class AuthService
 
     public function verifyEmail(int $id, string $hash): void
     {
-        $user = User::findOrFail($id);
-
-        // Verify the email hash
-        if (! hash_equals(
-            (string) $hash,
-            sha1($user->getEmailForVerification())
-        )) {
-            abort(403, 'Invalid verification link.');
-        }
-
-        // Already verified হলে কিছুই করবে না
-        if ($user->hasVerifiedEmail()) {
-            return;
-        }
-
-        if ($user->markEmailAsVerified()) {
-            event(new Verified($user));
-        }
+        $this->verifyEmailAction->execute($id, $hash);
     }
 
 }

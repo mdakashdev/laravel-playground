@@ -329,3 +329,240 @@ git push
 ```
 
 ---
+
+## 🚨 Roadmap Adjustment (Production API Standard)
+
+
+```text
+Register
+    ↓
+Send Verification Email
+    ↓
+User clicks link
+    ↓
+GET /email/verify/{id}/{hash}
+    ↓
+Find User
+    ↓
+Validate Hash
+    ↓
+markEmailAsVerified()
+    ↓
+JSON Response
+```
+
+এটা API-first architecture-এর জন্য standard।
+
+নতুন implementation করব।
+
+### Controller
+
+`EmailVerificationRequest` বাদ।
+
+```php
+public function verifyEmail(Request $request, int $id, string $hash)
+```
+
+---
+
+### Service
+
+Method হবে:
+
+```php
+verifyEmail(int $id, string $hash): void
+```
+
+### ভিতরে
+
+1. User find করবে।
+2. Hash check করবে।
+3. Already verified হলে skip করবে।
+4. `markEmailAsVerified()` করবে।
+5. Event fire হবে (Laravel automatically করে)।
+
+## ❌ `EmailVerificationRequest` ব্যবহার করব না।
+
+কারণ এটা session/web authentication-এর জন্য design করা।
+
+আমরা API backend বানাচ্ছি।
+
+দারুণ। এটাই আমাদের roadmap-এর **প্রথম adjustment**।
+
+আমি আগে বলেছিলাম **"standard অনুযায়ী"** করব। এখানে Laravel-এর default standard (`EmailVerificationRequest`) আসলে **web application**-এর জন্য। কিন্তু আমরা **REST API backend** বানাচ্ছি, তাই API standard follow করব।
+
+---
+
+# Task 3 (Updated): Verify Email API
+
+## Goal
+
+Verification link-এ click করলে email verified হবে এবং JSON response return করবে।
+
+---
+
+## Step 1
+
+নতুন Action তৈরি করো।
+
+```bash
+docker compose exec app php artisan make:class Actions/Auth/VerifyEmailAction
+```
+
+---
+
+## Step 2
+
+`VerifyEmailAction`
+
+Method:
+
+```php
+execute(int $id, string $hash): void
+```
+
+Responsibilities (শুধু এগুলো):
+
+1. User `id` দিয়ে find করবে।
+2. User না পেলে `404` exception।
+3. Hash verify করবে।
+4. Hash invalid হলে `403` exception।
+5. যদি already verified না হয়, `markEmailAsVerified()` call করবে।
+
+> ❌ Response return করবে না।
+
+---
+
+## Step 3
+
+`AuthService`
+
+Method:
+
+```php
+verifyEmail(int $id, string $hash): void
+```
+
+এখানে শুধু `VerifyEmailAction` call করবে।
+
+---
+
+## Step 4
+
+`AuthController`
+
+Method:
+
+```php
+verifyEmail(Request $request, int $id, string $hash)
+```
+
+Flow:
+
+```text
+Route
+    ↓
+AuthController
+    ↓
+AuthService
+    ↓
+VerifyEmailAction
+    ↓
+ApiResponse::success()
+```
+
+Response:
+
+```json
+{
+  "success": true,
+  "message": "Email verified successfully.",
+  "data": null
+}
+```
+
+---
+
+## Step 5
+
+Route
+
+```php
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
+    ->middleware('signed')
+    ->name('verification.verify');
+```
+
+⚠️ **`auth:sanctum` middleware থাকবে না।**
+
+---
+
+## Step 6
+
+Hash verify করার জন্য Laravel-এর একই logic ব্যবহার করবে।
+
+Hint:
+
+```php
+sha1($user->getEmailForVerification())
+```
+
+এবং route-এর `$hash` compare করবে।
+
+---
+
+## Step 7
+
+Testing
+
+### Test 1
+
+* নতুন user register
+* Mailpit থেকে link open
+
+Expected:
+
+* `200 OK`
+* `"Email verified successfully."`
+
+---
+
+### Test 2
+
+Database
+
+আগে:
+
+```text
+email_verified_at = NULL
+```
+
+পরে:
+
+```text
+email_verified_at = timestamp
+```
+
+---
+
+### Test 3
+
+URL-এর hash পরিবর্তন করে open করো।
+
+Expected:
+
+```http
+403 Forbidden
+```
+
+---
+
+## Commit
+
+```bash
+git add .
+git commit -m "feat(auth): implement api email verification"
+git push
+```
+
+---
