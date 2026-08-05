@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::get('/ping', function () {
     return \App\Support\ApiResponse::success(
@@ -38,3 +39,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::get('/logout', [AuthController::class, 'logout']);
 });
+
+
+/**
+ * check temporary route
+ */
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    return response()->json([
+        'message' => 'Temporary verification route',
+    ]);
+})->middleware(['signed'])->name('verification.verify');

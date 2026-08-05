@@ -21,7 +21,7 @@ Task 10 Refactor & Cleanup
 
 ---
 
-# Sprint 2 — Task 1: Email Verification Setup
+# Task 1: Email Verification Setup
 
 ## Goal
 
@@ -104,6 +104,100 @@ NULL
 ```bash
 git add .
 git commit -m "feat(auth): prepare email verification foundation"
+git push
+```
+
+---
+
+
+# Task 2: Send Verification Email
+
+## Goal
+
+User registration-এর পরে verification email send হবে।
+
+---
+
+## Step 1
+
+`AuthService::register()` update করো।
+
+Flow হবে:
+
+```text
+Create User
+    ↓
+Send Email Verification
+    ↓
+Return User
+```
+
+---
+
+## Step 2
+
+User create হওয়ার পরে call করো:
+
+```php
+$user->sendEmailVerificationNotification();
+```
+
+---
+
+## Step 3
+
+`RegisterUserAction` পরিবর্তন করবে না।
+
+Notification send করার logic শুধু `AuthService`-এ থাকবে।
+
+---
+
+## Step 4
+
+Register API call করো।
+
+নতুন user register করো।
+
+---
+
+## Step 5
+
+Mailpit open করো:
+
+```text
+http://localhost:8025
+```
+
+Expected:
+
+* Verification email এসেছে।
+* Verification link আছে।
+
+---
+
+## Step 6
+
+Database-এ verify করো:
+
+```text
+email_verified_at
+```
+
+Expected:
+
+```text
+NULL
+```
+
+Email click করার আগে verify হবে না।
+
+---
+
+## Commit
+
+```bash
+git add .
+git commit -m "feat(auth): send email verification after registration"
 git push
 ```
 

@@ -20,7 +20,10 @@ class AuthService
 
     public function register(array $data): User
     {
-        return $this->registerUserAction->execute($data);
+        $user = $this->registerUserAction->execute($data);
+        $user->sendEmailVerificationNotification();
+
+        return $user;
     }
 
     public function login(array $credentials): array
