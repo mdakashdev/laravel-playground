@@ -80,9 +80,13 @@ class AuthController extends Controller
         return ApiResponse::success('Pending implementation');
     }
 
-    public function verifyEmail()
+    public function verifyEmail(Request $request, int $id, string $hash)
     {
-        return ApiResponse::success('Pending implementation');
+        $this->authService->verifyEmail($id, $hash);
+
+        return ApiResponse::success(
+            message: 'Email verified successfully.'
+        );
     }
 
     public function resendVerification()

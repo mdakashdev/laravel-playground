@@ -202,3 +202,130 @@ git push
 ```
 
 ---
+
+# Task 3: Verify Email Endpoint
+
+## Goal
+
+User verification link-এ click করলে email verified হবে।
+
+---
+
+### Step 1
+
+Temporary route remove করো।
+
+---
+
+### Step 2
+
+`AuthService`-এ method add করো:
+
+```php
+verifyEmail(EmailVerificationRequest $request): void
+```
+
+Responsibilities:
+
+* Email verify করবে।
+* যদি already verified হয়, কোনো error দিবে না।
+
+---
+
+### Step 3
+
+`AuthController`
+
+Method:
+
+```php
+verifyEmail(EmailVerificationRequest $request)
+```
+
+Flow:
+
+```text
+EmailVerificationRequest
+        ↓
+AuthService::verifyEmail()
+        ↓
+ApiResponse::success()
+```
+
+Response:
+
+```json
+{
+  "success": true,
+  "message": "Email verified successfully.",
+  "data": null
+}
+```
+
+---
+
+### Step 4
+
+Route
+
+```http
+GET /api/v1/email/verify/{id}/{hash}
+```
+
+Middleware:
+
+```text
+signed
+```
+
+Route name অবশ্যই:
+
+```text
+verification.verify
+```
+
+---
+
+### Step 5
+
+Testing
+
+1. নতুন user register করো।
+2. Mailpit থেকে verification link open করো।
+
+Expected:
+
+* **200 OK**
+* `"Email verified successfully."`
+
+---
+
+### Step 6
+
+Database verify করো।
+
+`email_verified_at`
+
+আগে:
+
+```text
+NULL
+```
+
+পরে:
+
+```text
+timestamp
+```
+
+---
+
+## Commit
+
+```bash
+git add .
+git commit -m "feat(auth): implement email verification endpoint"
+git push
+```
+
+---

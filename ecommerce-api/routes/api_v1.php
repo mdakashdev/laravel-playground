@@ -44,8 +44,19 @@ Route::middleware('auth:sanctum')->group(function () {
 /**
  * check temporary route
  */
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    return response()->json([
-        'message' => 'Temporary verification route',
-    ]);
-})->middleware(['signed'])->name('verification.verify');
+//Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+//    return response()->json([
+//        'message' => 'Temporary verification route',
+//    ]);
+//})->middleware(['signed'])->name('verification.verify');
+//
+
+/**
+ * instead of
+ * http://localhost:8000/api/v1/email/verify/10/269f7529c829200c01aa86ba04c0d5
+ */
+
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
+    ->middleware(['signed'])
+    ->name('verification.verify');
+
