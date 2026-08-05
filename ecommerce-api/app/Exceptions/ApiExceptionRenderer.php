@@ -55,8 +55,8 @@ class ApiExceptionRenderer
 
             $e instanceof HttpException =>
             ApiResponse::error(
-                message: 'Your account is inactive',
-                statusCode: 403
+                message: $e->getMessage(),
+                statusCode: $e->getStatusCode()
             ),
 
             default => (function () use ($e) {

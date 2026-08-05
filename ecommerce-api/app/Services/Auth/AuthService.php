@@ -4,6 +4,7 @@ namespace App\Services\Auth;
 
 use App\Actions\Auth\LoginUserAction;
 use App\Actions\Auth\RegisterUserAction;
+use App\Actions\Auth\ResendVerificationEmailAction;
 use App\Actions\Auth\VerifyEmailAction;
 use App\Models\User;
 
@@ -15,7 +16,8 @@ class AuthService
     public function __construct(
         protected RegisterUserAction $registerUserAction,
         protected LoginUserAction $loginUserAction,
-        protected VerifyEmailAction $verifyEmailAction
+        protected VerifyEmailAction $verifyEmailAction,
+        protected ResendVerificationEmailAction $resendVerificationEmailAction
     ) {
     }
 
@@ -53,6 +55,11 @@ class AuthService
     public function verifyEmail(int $id, string $hash): void
     {
         $this->verifyEmailAction->execute($id, $hash);
+    }
+
+    public function resendVerificationEmail(string $email): void
+    {
+        $this->resendVerificationEmailAction->execute($email);
     }
 
 }

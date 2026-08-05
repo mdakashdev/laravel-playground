@@ -44,7 +44,7 @@
 * [ ] `email_verified_at` updated
 * [ ] Commit & Push
 
-# Task 3 (Updated): Verify Email API
+## Task 3 (Updated): Verify Email API
 
 * [ ] `VerifyEmailAction`
 * [ ] Hash validation
@@ -55,6 +55,20 @@
 * [ ] Success test
 * [ ] Invalid hash test
 * [ ] Commit & Push
+
+## Task 4: Resend Verification Email
+
+* [ ] `ResendVerificationEmailRequest`
+* [ ] `ResendVerificationEmailAction`
+* [ ] `AuthService::resendVerificationEmail()`
+* [ ] `AuthController`
+* [ ] Route added
+* [ ] Mailpit test
+* [ ] Verified user blocked
+* [ ] Unknown email handled
+* [ ] Commit & Push
+
+
 
 # Draft
 
@@ -72,3 +86,22 @@
  কিন্তু আমরা **API + Sanctum Token Authentication** করছি। Mailpit-এর verification link browser থেকে open হলে কোনো Bearer Token যায় না। তাই user authenticate হয় না।
 
 ---
+
+task4: `Resend Verification Email` endpoint-এর উদ্দেশ্য হলো: **যে user registration করেছে কিন্তু এখনো email verify করেনি, সে আবার verification email পেতে পারবে।**
+
+অনেক কারণে প্রথম email ব্যবহার করা নাও হতে পারে: Email spam folder-এ চলে গেছে, User email miss করেছে, Verification link expire হয়ে গেছে , User আবার email চায়
+
+তাই একটি API রাখা হয়: POST /api/v1/email/verification-notification
+
+যেখানে user শুধু তার email পাঠাবে: "email": "user@example.com" 
+
+resendVerificationEmail er jonno, akta route define korlam then controller - service - action 
+
+```text
+then akta excepton handle korecilam sekhane `NotFoundHttpException` er jonno, application a jekono jaigai NotFoundHttpException emon erro asle
+sei message ta lagbe, tar jonno HttpException a message and code print korte hobe.
+```
+
+---
+
+

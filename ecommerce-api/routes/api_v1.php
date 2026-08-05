@@ -60,3 +60,9 @@ Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
     ->middleware(['signed'])
     ->name('verification.verify');
 
+
+/**
+ * resend email verification
+ */
+
+Route::post('/email/verification-notification', [AuthController::class, 'resendVerificationEmail']);

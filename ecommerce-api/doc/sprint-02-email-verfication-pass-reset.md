@@ -109,7 +109,6 @@ git push
 
 ---
 
-
 # Task 2: Send Verification Email
 
 ## Goal
@@ -568,3 +567,159 @@ git push
 ---
 
 
+# Task 4: Resend Verification Email
+
+## Goal
+
+যে user এখনও verify করেনি, সে নতুন verification email request করতে পারবে।
+
+---
+
+## Step 1
+
+Create Request
+
+```bash
+docker compose exec app php artisan make:request Api/V1/Auth/ResendVerificationEmailRequest
+```
+
+Rules:
+
+```text
+email => required|email
+```
+
+---
+
+## Step 2
+
+Create Action
+
+```bash
+docker compose exec app php artisan make:class Actions/Auth/ResendVerificationEmailAction
+```
+
+Method:
+
+```php
+execute(string $email): void
+```
+
+Responsibilities:
+
+1. Email দিয়ে user খুঁজবে।
+2. User না থাকলে `404` exception।
+3. যদি already verified হয় → `400` exception।
+4. `sendEmailVerificationNotification()` call করবে।
+
+> ❌ Response return করবে না।
+
+---
+
+## Step 3
+
+`AuthService`
+
+Method:
+
+```php
+resendVerificationEmail(string $email): void
+```
+
+শুধু Action call করবে।
+
+---
+
+## Step 4
+
+`AuthController`
+
+Method:
+
+```text
+resendVerificationEmail()
+```
+
+Flow:
+
+```text
+ResendVerificationEmailRequest
+            ↓
+validated()
+            ↓
+AuthService
+            ↓
+ApiResponse::success()
+```
+
+Response:
+
+```json
+{
+  "success": true,
+  "message": "Verification email sent successfully.",
+  "data": null
+}
+```
+
+Status:
+
+```http
+200 OK
+```
+
+---
+
+## Step 5
+
+Route
+
+```http
+POST /api/v1/email/verification-notification
+```
+
+> **এই endpoint-এ `auth:sanctum` ব্যবহার করবে না।**
+> Email address দিয়েই request হবে।
+
+---
+
+## Step 6
+
+Testing
+
+### Test 1
+
+Unverified user-এর email দিয়ে request।
+
+Expected:
+
+* `200 OK`
+* Mailpit-এ নতুন verification email।
+
+### Test 2
+
+Verified user-এর email।
+
+Expected:
+
+* `400 Bad Request`
+
+### Test 3
+
+Unknown email।
+
+Expected:
+
+* `404 Not Found`
+
+---
+
+## Commit
+
+```bash
+git add .
+git commit -m "feat(auth): implement resend verification email api"
+git push
+```
+
+---

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Auth\RegisterRequest;
 use App\Http\Requests\Api\V1\Auth\LoginRequest;
+use App\Http\Requests\Api\V1\Auth\ResendVerificationEmailRequest;
 use App\Http\Resources\Api\V1\UserResource;
 use App\Services\Auth\AuthService;
 use App\Support\ApiResponse;
@@ -89,9 +90,15 @@ class AuthController extends Controller
         );
     }
 
-    public function resendVerification()
+    public function resendVerificationEmail(ResendVerificationEmailRequest $request)
     {
-        return ApiResponse::success('Pending implementation');
+        $this->authService->resendVerificationEmail(
+            $request->validated('email')
+        );
+
+        return ApiResponse::success(
+            "Verification email sent successfully."
+        );
     }
 
 }
