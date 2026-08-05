@@ -74,10 +74,11 @@ Route::post('/email/verification-notification', [AuthController::class, 'resendV
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 
 //temp forgot pass
-Route::get('/reset-password/{token}', function (string $token) {
-    return response()->json([
-        'token' => $token,
-    ]);
-})->name('password.reset');
+//Route::get('/reset-password/{token}', function (string $token) {
+//    return response()->json([
+//        'token' => $token,
+//    ]);
+//})->name('password.reset');
 
-
+Route::get('/reset-password/{token}', [AuthController::class, 'passwordResetPage'])
+    ->name('password.reset');

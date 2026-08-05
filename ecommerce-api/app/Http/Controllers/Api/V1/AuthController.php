@@ -108,4 +108,15 @@ class AuthController extends Controller
         );
     }
 
+    public function passwordResetPage(Request $request, string $token)
+    {
+        return ApiResponse::success(
+            'Password reset token is valid.',
+            [
+                'token' => $token,
+                'email' => $request->query('email'),
+            ]
+        );
+    }
+
 }

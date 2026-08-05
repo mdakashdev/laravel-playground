@@ -79,6 +79,7 @@
 * [ ] Unknown email handled
 * [ ] Commit & Push
 
+## Task 5 (Updated): Password Reset Route Foundation
 
 # Draft
 
@@ -114,5 +115,9 @@ sei message ta lagbe, tar jonno HttpException a message and code print korte hob
 
 ---
 
-task5: password broker;
+task5: password broker use kora hoyeche
+Laravel-এর Password Broker **`password.reset` named route** খোঁজে। se jonno amra arekta route kore sekhan theke response diye disi
+forgot password korte gele 2 ta endpoint lagbe 1. /forgot-password and /reset-password
+- 
 
+task6:

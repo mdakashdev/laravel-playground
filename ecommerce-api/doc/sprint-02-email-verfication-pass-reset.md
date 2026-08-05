@@ -723,7 +723,6 @@ git push
 
 ---
 
-
 # Task 5: Forgot Password
 
 ## Goal
@@ -957,3 +956,78 @@ public function sendPasswordResetNotification($token): void
 যেহেতু তুমি **API-first authentication system** বানাচ্ছ, **Option 2**-ই সঠিক architecture।
 
 
+
+
+
+# Task 5 (Updated): Password Reset Route Foundation
+
+> `Password::sendResetLink()` internally `password.reset` route generate করতে চায়। কিন্তু আমরা এখনও সেই route বানাইনি।
+> 
+## Goal
+
+Laravel password reset email যেন valid URL generate করতে পারে।
+
+---
+
+### Step 1
+
+`AuthController`-এ নতুন method add করো।
+
+```php
+public function passwordResetPage(Request $request, string $token)
+{
+    return ApiResponse::success(
+        'Password reset token is valid.',
+        [
+            'token' => $token,
+            'email' => $request->query('email'),
+        ]
+    );
+}
+```
+
+---
+
+### Step 2
+
+Route add করো।
+
+```php
+Route::get('/reset-password/{token}', [AuthController::class, 'passwordResetPage'])
+    ->name('password.reset');
+```
+
+⚠️ এখানে **`auth:sanctum` থাকবে না।**
+
+---
+
+### Step 3
+
+আবার Forgot Password API call করো।
+
+Expected:
+
+* Mailpit-এ password reset email আসবে।
+* Email-এর link open করলে JSON response আসবে।
+
+---
+
+### Step 4
+
+Commit
+
+```bash
+git add .
+git commit -m "feat(auth): add password reset route foundation"
+git push
+```
+
+---
+
+## ✅ কেন এটা করছি?
+
+Laravel-এর Password Broker **`password.reset` named route** খোঁজে। Route না থাকলে email generate করতে পারে না।
+
+এখন route foundation তৈরি হলে পরের task-এ আমরা সেই token ব্যবহার করে **actual Reset Password API** implement করব।
+
+---
