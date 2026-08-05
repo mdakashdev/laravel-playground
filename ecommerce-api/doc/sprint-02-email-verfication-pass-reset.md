@@ -1858,8 +1858,6 @@ git push
 
 ---
 
-# ✅ Checklist
-
 ### একটি গুরুত্বপূর্ণ নিয়ম (এখন থেকে)
 
 Feature Test লেখার সময়:
@@ -1870,3 +1868,164 @@ Feature Test লেখার সময়:
 * **Response Structure Assertion** প্রত্যেক endpoint-এ থাকবে।
 
 এগুলো আমাদের পরবর্তী সব Sprint-এও একইভাবে অনুসরণ করা হবে।
+
+# Task 10: Cleanup
+
+## Goal
+
+Authentication module release-ready করা। নতুন feature যোগ করা যাবে না।
+
+---
+
+# Task 1 — Remove Debug Code
+
+পুরো project search করো এবং remove করো:
+
+```text
+dd(
+dump(
+ray(
+logger(
+var_dump(
+print_r(
+```
+
+---
+
+# Task 2 — Remove Dead Code
+
+Remove:
+
+* Unused methods
+* Commented code
+* Temporary routes
+* Temporary helper methods
+* Unused imports
+
+---
+
+# Task 3 — Route Review
+
+Check:
+
+* [ ] Public routes grouped
+* [ ] Protected routes grouped
+* [ ] Route names consistent
+* [ ] Prefix consistent (`api/v1`)
+
+---
+
+# Task 4 — Request Review
+
+সব Request class check করো।
+
+* Validation rules clean
+* Custom messages (যদি দরকার হয়)
+* Unused imports remove
+
+---
+
+# Task 5 — Controller Review
+
+সব Controller method check করো।
+
+* Business logic নেই
+* Response একই format
+* Naming consistent
+
+---
+
+# Task 6 — Service Review
+
+Check:
+
+* One public method = one use case
+* No duplicated logic
+* Constructor Injection everywhere
+
+---
+
+# Task 7 — Action Review
+
+সব Action check করো।
+
+* Single Responsibility
+* No Response
+* No Request dependency
+* No Controller dependency
+
+---
+
+# Task 8 — Code Style
+
+Run:
+
+```bash
+docker compose exec app ./vendor/bin/pint
+```
+
+সব formatting fix করো।
+
+---
+
+# Task 9 — Final Test
+
+Run:
+
+```bash
+docker compose exec app php artisan test
+```
+
+Expected:
+
+```text
+PASS
+```
+
+তারপর manually test করো:
+
+* Register
+* Login
+* Logout
+* Me
+* Verify Email
+* Resend Verification
+* Forgot Password
+* Reset Password
+
+সব endpoint success হওয়া উচিত।
+
+---
+
+# Task 10 — Documentation Update
+
+`README.md` update করো।
+
+Minimum sections:
+
+```text
+Project Overview
+Requirements
+Installation
+Docker Setup
+Environment Variables
+Run Project
+Run Queue Worker
+Run Tests
+API Base URL
+Authentication Flow
+```
+
+---
+
+# Commit
+
+```bash
+git add .
+git commit -m "chore(auth): cleanup authentication module"
+git push
+```
+
+---
+
+এটাই একটি production-quality authentication module-এর শক্ত ভিত্তি। Sprint 3-এ আমরা **Role & Permission (RBAC)** শুরু করব।

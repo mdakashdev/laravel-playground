@@ -136,6 +136,22 @@
 * [ ] Commit & Push
 
 
+
+## Task 10: Cleanup
+
+* [ ] Debug code removed
+* [ ] Dead code removed
+* [ ] Routes reviewed
+* [ ] Requests reviewed
+* [ ] Controllers reviewed
+* [ ] Services reviewed
+* [ ] Actions reviewed
+* [ ] Pint passed
+* [ ] Tests passed
+* [ ] README updated
+* [ ] Commit & Push
+
+
 # Draft
 
 - built-in Email Verification flow ব্যবহার করতে পারব। se jonno MustVerifyEmail use in user model and trait check and db te check email_verified_at
