@@ -958,7 +958,6 @@ public function sendPasswordResetNotification($token): void
 
 
 
-
 # Task 5 (Updated): Password Reset Route Foundation
 
 > `Password::sendResetLink()` internally `password.reset` route generate করতে চায়। কিন্তু আমরা এখনও সেই route বানাইনি।
@@ -1029,5 +1028,209 @@ git push
 Laravel-এর Password Broker **`password.reset` named route** খোঁজে। Route না থাকলে email generate করতে পারে না।
 
 এখন route foundation তৈরি হলে পরের task-এ আমরা সেই token ব্যবহার করে **actual Reset Password API** implement করব।
+
+---
+
+
+# ask 6: Reset Password API
+
+## Goal
+
+User reset token ব্যবহার করে নতুন password সেট করতে পারবে।
+
+> ⚠️ এই Task-এ **কোনো extra feature করবে না**। শুধু standard implementation।
+
+---
+
+## Step 1 — Create Request
+
+```bash
+docker compose exec app php artisan make:request Api/V1/Auth/ResetPasswordRequest
+```
+
+Rules
+
+```text
+token => required|string
+email => required|email
+password => required|string|min:8|confirmed
+```
+
+---
+
+## Step 2 — Create Action
+
+```bash
+docker compose exec app php artisan make:class Actions/Auth/ResetPasswordAction
+```
+
+Method
+
+```php
+execute(array $data): void
+```
+
+Responsibilities
+
+* Laravel Password Broker ব্যবহার করবে।
+* Token verify করবে।
+* Password update করবে।
+* Remember token regenerate করবে।
+* Success না হলে exception throw করবে।
+* Response return করবে না।
+
+---
+
+## Step 3 — AuthService
+
+Method
+
+```php
+resetPassword(array $data): void
+```
+
+Responsibilities
+
+* শুধু `ResetPasswordAction` call করবে।
+
+---
+
+## Step 4 — AuthController
+
+Method
+
+```php
+resetPassword(ResetPasswordRequest $request)
+```
+
+Flow
+
+```text
+ResetPasswordRequest
+        ↓
+validated()
+        ↓
+AuthService
+        ↓
+ApiResponse::success()
+```
+
+Response
+
+```json
+{
+    "success": true,
+    "message": "Password reset successfully.",
+    "data": null
+}
+```
+
+Status
+
+```http
+200 OK
+```
+
+---
+
+## Step 5 — Route
+
+```http
+POST /api/v1/reset-password
+```
+
+No authentication middleware.
+
+---
+
+## Step 6 — Password Broker
+
+`ResetPasswordAction`-এ Laravel Password Broker ব্যবহার করবে।
+
+Success status:
+
+```text
+Password::PASSWORD_RESET
+```
+
+Failure:
+
+Exception throw করবে।
+
+---
+
+## Step 7 — Password Update Callback
+
+Password reset success হলে callback-এর ভিতরে:
+
+* User password update করবে (`Hash::make()`)
+* `remember_token` regenerate করবে
+
+> **শুধু এই দুইটা কাজ।**
+
+---
+
+## Step 8 — Testing
+
+### Test 1
+
+Forgot Password API call করো।
+
+Mailpit থেকে:
+
+* token
+* email
+
+নিয়ে Reset Password API call করো।
+
+Expected:
+
+```http
+200 OK
+```
+
+---
+
+### Test 2
+
+নতুন password দিয়ে Login API call করো।
+
+Expected:
+
+```http
+200 OK
+```
+
+Old password দিয়ে login fail করবে।
+
+---
+
+### Test 3
+
+Invalid token
+
+Expected:
+
+Consistent API error response।
+
+---
+
+### Test 4
+
+Expired token (যদি test করতে চাও)
+
+Expected:
+
+Consistent API error response।
+
+---
+
+## Commit
+
+```bash
+git add .
+git commit -m "feat(auth): implement reset password api"
+git push
+```
 
 ---

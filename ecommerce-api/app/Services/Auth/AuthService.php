@@ -6,6 +6,7 @@ use App\Actions\Auth\ForgotPasswordAction;
 use App\Actions\Auth\LoginUserAction;
 use App\Actions\Auth\RegisterUserAction;
 use App\Actions\Auth\ResendVerificationEmailAction;
+use App\Actions\Auth\ResetPasswordAction;
 use App\Actions\Auth\VerifyEmailAction;
 use App\Models\User;
 
@@ -19,7 +20,8 @@ class AuthService
         protected LoginUserAction $loginUserAction,
         protected VerifyEmailAction $verifyEmailAction,
         protected ResendVerificationEmailAction $resendVerificationEmailAction,
-        protected ForgotPasswordAction $forgotPasswordAction
+        protected ForgotPasswordAction $forgotPasswordAction,
+        protected ResetPasswordAction $resetPasswordAction
     ) {
     }
 
@@ -67,6 +69,11 @@ class AuthService
     public function forgotPassword(string $email): void
     {
         $this->forgotPasswordAction->execute($email);
+    }
+
+    public function resetPassword(array $data)
+    {
+        $this->resetPasswordAction->execute($data);
     }
 
 }

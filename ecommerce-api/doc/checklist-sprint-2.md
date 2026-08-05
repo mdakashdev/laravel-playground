@@ -81,6 +81,21 @@
 
 ## Task 5 (Updated): Password Reset Route Foundation
 
+## ask 6: Reset Password API
+
+* [ ] `ResetPasswordRequest`
+* [ ] `ResetPasswordAction`
+* [ ] `AuthService::resetPassword()`
+* [ ] `AuthController::resetPassword()`
+* [ ] Route added
+* [ ] Password Broker integrated
+* [ ] Password updated
+* [ ] Remember token regenerated
+* [ ] New password login success
+* [ ] Old password login failed
+* [ ] Invalid token handled
+* [ ] Commit & Push
+
 # Draft
 
 - built-in Email Verification flow ব্যবহার করতে পারব। se jonno MustVerifyEmail use in user model and trait check and db te check email_verified_at
@@ -121,3 +136,15 @@ forgot password korte gele 2 ta endpoint lagbe 1. /forgot-password and /reset-pa
 - 
 
 task6:
+
+Password::reset() নিজেই—
+
+token verify করে
+email verify করে
+token expired কিনা দেখে
+callback execute করে
+token delete করে
+
+তোমাকে এগুলো manually করতে হবে না।
+
+- forget-password endpoint theke token niye /reset-password korbo

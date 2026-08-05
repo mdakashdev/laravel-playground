@@ -82,3 +82,9 @@ Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 
 Route::get('/reset-password/{token}', [AuthController::class, 'passwordResetPage'])
     ->name('password.reset');
+
+/**
+ * reset password
+ */
+
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);

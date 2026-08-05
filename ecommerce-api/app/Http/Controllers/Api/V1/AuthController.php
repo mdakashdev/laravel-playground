@@ -7,6 +7,7 @@ use App\Http\Requests\Api\V1\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Api\V1\Auth\RegisterRequest;
 use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Http\Requests\Api\V1\Auth\ResendVerificationEmailRequest;
+use App\Http\Requests\Api\V1\Auth\ResetPasswordRequest;
 use App\Http\Resources\Api\V1\UserResource;
 use App\Services\Auth\AuthService;
 use App\Support\ApiResponse;
@@ -83,9 +84,13 @@ class AuthController extends Controller
         );
     }
 
-    public function resetPassword()
+    public function resetPassword(ResetPasswordRequest $request)
     {
-        return ApiResponse::success('Pending implementation');
+        $this->authService->resetPassword(
+            $request->validated()
+        );
+
+        return ApiResponse::success('Password reset successfully.');
     }
 
     public function verifyEmail(Request $request, int $id, string $hash)
