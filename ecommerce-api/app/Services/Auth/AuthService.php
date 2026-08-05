@@ -2,6 +2,7 @@
 
 namespace App\Services\Auth;
 
+use App\Actions\Auth\ForgotPasswordAction;
 use App\Actions\Auth\LoginUserAction;
 use App\Actions\Auth\RegisterUserAction;
 use App\Actions\Auth\ResendVerificationEmailAction;
@@ -17,7 +18,8 @@ class AuthService
         protected RegisterUserAction $registerUserAction,
         protected LoginUserAction $loginUserAction,
         protected VerifyEmailAction $verifyEmailAction,
-        protected ResendVerificationEmailAction $resendVerificationEmailAction
+        protected ResendVerificationEmailAction $resendVerificationEmailAction,
+        protected ForgotPasswordAction $forgotPasswordAction
     ) {
     }
 
@@ -60,6 +62,11 @@ class AuthService
     public function resendVerificationEmail(string $email): void
     {
         $this->resendVerificationEmailAction->execute($email);
+    }
+
+    public function forgotPassword(string $email): void
+    {
+        $this->forgotPasswordAction->execute($email);
     }
 
 }

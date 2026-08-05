@@ -66,3 +66,18 @@ Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
  */
 
 Route::post('/email/verification-notification', [AuthController::class, 'resendVerificationEmail']);
+
+/**
+ * forgot password
+ */
+
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+
+//temp forgot pass
+Route::get('/reset-password/{token}', function (string $token) {
+    return response()->json([
+        'token' => $token,
+    ]);
+})->name('password.reset');
+
+

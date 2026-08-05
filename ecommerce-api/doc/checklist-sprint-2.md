@@ -6,9 +6,9 @@
 ✅ Task 1  Email Verification Foundation
 ✅ Task 2  Send Verification Email
 ✅ Task 3  Verify Email Endpoint
-⬜ Task 4  Resend Verification Email
-⬜ Task 5  Forgot Password
-⬜ Task 6  Reset Password
+✅ Task 4  Resend Verification Email
+✅ Task 5  Forgot Password
+✅ Task 6  Reset Password
 ⬜ Task 7  Queue Mail
 ⬜ Task 8  Feature Tests
 ⬜ Task 9  Refactor
@@ -68,6 +68,16 @@
 * [ ] Unknown email handled
 * [ ] Commit & Push
 
+## Task 5: Forgot Password
+
+* [ ] `ForgotPasswordRequest`
+* [ ] `ForgotPasswordAction`
+* [ ] `AuthService::forgotPassword()`
+* [ ] `AuthController`
+* [ ] Route added
+* [ ] Mailpit test
+* [ ] Unknown email handled
+* [ ] Commit & Push
 
 
 # Draft
@@ -104,4 +114,5 @@ sei message ta lagbe, tar jonno HttpException a message and code print korte hob
 
 ---
 
+task5: password broker;
 

@@ -566,7 +566,6 @@ git push
 
 ---
 
-
 # Task 4: Resend Verification Email
 
 ## Goal
@@ -723,3 +722,238 @@ git push
 ```
 
 ---
+
+
+# Task 5: Forgot Password
+
+## Goal
+
+User password reset link request করতে পারবে।
+
+---
+
+## Step 1
+
+Create Request
+
+```bash
+docker compose exec app php artisan make:request Api/V1/Auth/ForgotPasswordRequest
+```
+
+Rules:
+
+```text
+email => required|email
+```
+
+---
+
+## Step 2
+
+Create Action
+
+```bash
+docker compose exec app php artisan make:class Actions/Auth/ForgotPasswordAction
+```
+
+Method:
+
+```php
+execute(string $email): void
+```
+
+Responsibilities:
+
+1. Email exists কিনা check করবে।
+2. Password reset link send করবে Laravel Password Broker ব্যবহার করে।
+3. Failed হলে exception throw করবে।
+
+> ❌ Response return করবে না।
+
+---
+
+## Step 3
+
+`AuthService`
+
+Method:
+
+```php
+forgotPassword(string $email): void
+```
+
+শুধু Action call করবে।
+
+---
+
+## Step 4
+
+`AuthController`
+
+Method:
+
+```text
+forgotPassword()
+```
+
+Flow:
+
+```text
+ForgotPasswordRequest
+        ↓
+validated()
+        ↓
+AuthService
+        ↓
+ApiResponse::success()
+```
+
+Response:
+
+```json
+{
+  "success": true,
+  "message": "Password reset link sent successfully.",
+  "data": null
+}
+```
+
+Status:
+
+```http
+200 OK
+```
+
+---
+
+## Step 5
+
+Route
+
+```http
+POST /api/v1/forgot-password
+```
+
+No authentication middleware.
+
+---
+
+## Step 6
+
+Testing
+
+### Test 1
+
+Valid email
+
+Expected:
+
+* `200 OK`
+* Mailpit-এ password reset email।
+
+---
+
+### Test 2
+
+Unknown email
+
+Expected:
+
+* Appropriate error response (তোমার global exception handling অনুযায়ী consistent response আসবে)।
+
+---
+
+## Commit
+
+```bash
+git add .
+git commit -m "feat(auth): implement forgot password api"
+git push
+```
+
+---
+
+## কেন এই route (password.reset) লাগে?
+
+Flow হচ্ছে:
+
+```
+POST /forgot-password
+        │
+        ▼
+Password::sendResetLink()
+        │
+        ▼
+Laravel ResetPassword Notification
+        │
+        ▼
+route('password.reset')
+        │
+        ▼
+Mail এ URL তৈরি করে
+```
+
+URL বানানোর সময় route না পেয়ে exception দিচ্ছে।
+
+---
+
+# এখন দুইটা option আছে
+
+## Option 1 (Temporary - Testing)
+
+শুধু Mailpit-এ mail দেখতে চাইলে একটা dummy route add করো।
+
+```php
+Route::get('/reset-password/{token}', function (string $token) {
+    return response()->json([
+        'token' => $token,
+    ]);
+})->name('password.reset');
+```
+
+এতে mail চলে যাবে।
+
+---
+
+## Option 2 (Production Standard) ✅
+
+Custom `ResetPassword` Notification বানাবে।
+
+```bash
+php artisan make:notification ResetPasswordNotification
+```
+
+তারপর:
+
+```php
+public function toMail($notifiable)
+{
+    $url = config('app.frontend_url')
+        . '/reset-password?token='
+        . $this->token
+        . '&email='
+        . urlencode($notifiable->email);
+
+    return (new MailMessage)
+        ->subject('Reset Password')
+        ->line('Click below to reset your password.')
+        ->action('Reset Password', $url);
+}
+```
+
+`User` model-এ override করবে:
+
+```php
+public function sendPasswordResetNotification($token): void
+{
+    $this->notify(new ResetPasswordNotification($token));
+}
+```
+
+---
+
+## আমি কী recommend করছি?
+
+যেহেতু তুমি **API-first authentication system** বানাচ্ছ, **Option 2**-ই সঠিক architecture।
+
+

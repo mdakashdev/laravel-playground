@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Api\V1\Auth\RegisterRequest;
 use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Http\Requests\Api\V1\Auth\ResendVerificationEmailRequest;
@@ -71,9 +72,15 @@ class AuthController extends Controller
         return ApiResponse::success('Pending implementation');
     }
 
-    public function forgotPassword()
+    public function forgotPassword(ForgotPasswordRequest $request)
     {
-        return ApiResponse::success('Pending implementation');
+        $this->authService->forgotPassword(
+            $request->validated('email')
+        );
+
+        return ApiResponse::success(
+            "Password reset link sent successfully.",
+        );
     }
 
     public function resetPassword()
