@@ -1369,3 +1369,504 @@ git push
 
 ---
 
+# Task 8: Refactor
+
+## Goal
+
+Authentication module clean, consistent এবং production-ready করা।
+
+---
+
+# Task 1 — Route Review
+
+## Check
+
+`routes/api_v1.php`
+
+* [ ] Authentication routes একসাথে আছে।
+* [ ] Public routes আগে।
+* [ ] Protected routes (`auth:sanctum`) পরে।
+* [ ] Route naming consistent।
+
+শেষে structure এমন হবে:
+
+```text
+Public
+    Register
+    Login
+    Forgot Password
+    Reset Password
+    Verify Email
+    Resend Verification
+
+Protected
+    Logout
+    Me
+```
+
+---
+
+# Task 2 — Controller Review
+
+Check every method.
+
+* [ ] Controller-এ business logic নেই।
+* [ ] শুধু Request → Service → ApiResponse।
+* [ ] Validation Request class দিয়ে হচ্ছে।
+
+---
+
+# Task 3 — Service Review
+
+Check.
+
+* [ ] শুধু orchestration।
+* [ ] Database query নেই।
+* [ ] Response return করছে না।
+* [ ] Exception swallow করছে না।
+
+---
+
+# Task 4 — Action Review
+
+প্রতিটি Action check করো।
+
+* [ ] Single Responsibility।
+* [ ] এক Action = এক কাজ।
+* [ ] Controller dependency নেই।
+* [ ] Request dependency নেই।
+* [ ] Response return নেই।
+
+---
+
+# Task 5 — ApiResponse Review
+
+সব endpoint check করো।
+
+Success format
+
+```json
+{
+    "success": true,
+    "message": "...",
+    "data": {}
+}
+```
+
+Error format
+
+```json
+{
+    "success": false,
+    "message": "...",
+    "data": null,
+    "errors": {}
+}
+```
+
+সব endpoint একই format follow করছে।
+
+---
+
+# Task 6 — Exception Review
+
+সব Action check করো।
+
+* [ ] `abort()` যতটা সম্ভব remove করো।
+* [ ] Meaningful exception throw করো।
+* [ ] Global exception handler response return করবে।
+
+> **Standard:** Business layer (`Action/Service`) HTTP response জানবে না।
+
+---
+
+# Task 7 — Naming Review
+
+সব class check করো।
+
+Examples
+
+```
+RegisterAction
+LoginAction
+ForgotPasswordAction
+ResetPasswordAction
+VerifyEmailAction
+```
+
+Request
+
+```
+LoginRequest
+RegisterRequest
+ForgotPasswordRequest
+ResetPasswordRequest
+```
+
+সব naming consistent।
+
+---
+
+# Task 8 — Dependency Injection
+
+Check.
+
+* Constructor Injection everywhere.
+* `new Class()` কোথাও নেই।
+
+---
+
+# Task 9 — Folder Structure
+
+Expected
+
+```text
+app
+ ├── Actions
+ │    └── Auth
+ │
+ ├── Http
+ │     ├── Controllers
+ │     └── Requests
+ │
+ ├── Services
+ │
+ ├── Support
+ │
+ ├── Notifications
+ │
+ └── Models
+```
+
+---
+
+# Task 10 — Dead Code Cleanup
+
+Remove
+
+* Temporary comments
+* Unused imports
+* Debug code
+* `dd()`
+* `dump()`
+* `ray()`
+* `logger()` (temporary)
+* Commented code
+
+---
+
+# Manual Review
+
+নিজেকে প্রশ্ন করো:
+
+* একই logic দুই জায়গায় আছে?
+* কোনো method খুব বড়?
+* কোনো Action দুইটা কাজ করছে?
+* কোনো Controller fat হয়ে গেছে?
+
+যদি হয়, এখনই refactor করো।
+
+---
+
+# Final Testing
+
+সব endpoint একবার test করো।
+
+* Register
+* Login
+* Logout
+* Me
+* Verify Email
+* Resend Verification
+* Forgot Password
+* Reset Password
+
+সব successful হতে হবে।
+
+---
+
+# Commit
+
+```bash
+git add .
+git commit -m "refactor(auth): improve authentication module structure"
+git push
+```
+
+---
+
+# Task 9: Feature Tests
+
+## Goal
+
+Authentication module-এর core API flow-এর **Feature Tests** লিখবে।
+
+> ⚠️ Unit Test লিখবে না। শুধুমাত্র **Feature Tests**।
+
+---
+
+# Step 1 — Create Test
+
+```bash
+docker compose exec app php artisan make:test Feature/Api/V1/Auth/AuthTest
+```
+
+---
+
+# Step 2 — Test Environment
+
+Check:
+
+* [ ] `RefreshDatabase` trait ব্যবহার করো।
+* [ ] Test database automatically refresh হচ্ছে।
+
+---
+
+# Step 3 — Register Tests
+
+লিখো।
+
+### Test 1
+
+```text
+User can register successfully.
+```
+
+Check:
+
+* Response `201`
+* User database-এ আছে।
+
+---
+
+### Test 2
+
+```text
+Email must be unique.
+```
+
+Check:
+
+* Response `422`
+
+---
+
+### Test 3
+
+```text
+Validation fails for invalid payload.
+```
+
+---
+
+# Step 4 — Login Tests
+
+### Test 1
+
+```text
+User can login with valid credentials.
+```
+
+Check:
+
+* `200`
+* Token exists।
+
+---
+
+### Test 2
+
+```text
+Invalid password.
+```
+
+Expected
+
+```http
+401
+```
+
+---
+
+### Test 3
+
+```text
+Unknown email.
+```
+
+Expected
+
+```http
+401
+```
+
+---
+
+# Step 5 — Protected Route Tests
+
+### Me Endpoint
+
+Authenticated user
+
+Expected
+
+```http
+200
+```
+
+---
+
+Unauthenticated
+
+Expected
+
+```http
+401
+```
+
+---
+
+### Logout
+
+Authenticated
+
+Expected
+
+```http
+200
+```
+
+Token deleted।
+
+---
+
+# Step 6 — Email Verification Tests
+
+### Resend Verification
+
+Unverified
+
+Expected
+
+```http
+200
+```
+
+---
+
+Verified
+
+Expected
+
+```http
+400
+```
+
+---
+
+# Step 7 — Forgot Password Tests
+
+Valid email
+
+Expected
+
+```http
+200
+```
+
+---
+
+Unknown email
+
+Expected
+
+```http
+404
+```
+
+---
+
+# Step 8 — Reset Password Tests
+
+Valid token
+
+Expected
+
+```http
+200
+```
+
+Password updated।
+
+---
+
+Invalid token
+
+Expected
+
+```http
+400
+```
+
+---
+
+# Step 9 — Response Structure
+
+সব endpoint check করো।
+
+Success
+
+```json
+{
+    "success": true,
+    "message": "...",
+    "data": ...
+}
+```
+
+Error
+
+```json
+{
+    "success": false,
+    "message": "...",
+    "errors": ...
+}
+```
+
+সব test-এ response structure assert করবে।
+
+---
+
+# Step 10 — Run Tests
+
+```bash
+docker compose exec app php artisan test
+```
+
+সব test pass হতে হবে।
+
+---
+
+# Commit
+
+```bash
+git add .
+git commit -m "test(auth): add authentication feature tests"
+git push
+```
+
+---
+
+# ✅ Checklist
+
+### একটি গুরুত্বপূর্ণ নিয়ম (এখন থেকে)
+
+Feature Test লেখার সময়:
+
+* **Happy Path** অবশ্যই থাকবে।
+* **Validation Failure** অবশ্যই থাকবে।
+* **Unauthorized Case** (যেখানে প্রযোজ্য) অবশ্যই থাকবে।
+* **Response Structure Assertion** প্রত্যেক endpoint-এ থাকবে।
+
+এগুলো আমাদের পরবর্তী সব Sprint-এও একইভাবে অনুসরণ করা হবে।

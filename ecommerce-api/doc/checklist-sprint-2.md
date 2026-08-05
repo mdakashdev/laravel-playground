@@ -107,6 +107,33 @@
 * [ ] Mailpit verified
 * [ ] Commit & Push
 
+# Task 8: Refactor
+
+* [ ] Routes reviewed
+* [ ] Controllers cleaned
+* [ ] Services reviewed
+* [ ] Actions reviewed
+* [ ] ApiResponse consistent
+* [ ] Exceptions cleaned
+* [ ] Naming consistent
+* [ ] Dependency Injection verified
+* [ ] Folder structure reviewed
+* [ ] Dead code removed
+* [ ] All endpoints tested
+* [ ] Commit & Push
+
+## Task 9: Feature Tests
+
+* [ ] Register tests
+* [ ] Login tests
+* [ ] Me tests
+* [ ] Logout tests
+* [ ] Verification tests
+* [ ] Forgot password tests
+* [ ] Reset password tests
+* [ ] Response structure assertions
+* [ ] All tests passing
+* [ ] Commit & Push
 
 
 # Draft
@@ -166,3 +193,6 @@ token delete করে
 task7:
 notification create then 
 ovverride in usermodel
+
+---
+task9: test case likhe sei jonno make:test korechi , only feature test
