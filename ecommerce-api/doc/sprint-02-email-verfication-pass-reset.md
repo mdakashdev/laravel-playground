@@ -1234,3 +1234,138 @@ git push
 ```
 
 ---
+
+
+# Task 7: Queue Email
+
+## Goal
+
+Email (Verification + Forgot Password) **queue** দিয়ে পাঠানো, যাতে request দ্রুত response দেয় এবং email background-এ send হয়।
+
+> ⚠️ এই Task-এ **শুধু email queue করবে**। Horizon, Supervisor বা production deployment এখন নয়।
+
+---
+
+# Step 1 — Queue Driver
+
+`.env`
+
+```dotenv
+QUEUE_CONNECTION=database
+```
+
+---
+
+# Step 2 — Queue Table
+
+যদি queue table না থাকে:
+
+```bash
+docker compose exec app php artisan queue:table
+docker compose exec app php artisan migrate
+```
+
+> যদি migration আগে থেকেই থাকে, তাহলে নতুন করে কিছু করার দরকার নেই।
+
+---
+
+# Step 3 — Queue Worker
+
+নতুন terminal খুলে চালাও:
+
+```bash
+docker compose exec app php artisan queue:work
+```
+
+এই terminal খোলা রাখবে।
+
+---
+
+# Step 4 — Queue Verification Email
+
+`App\Models\User`
+
+`sendEmailVerificationNotification()` method override করো।
+
+Laravel-এর `VerifyEmail` notification-কে queue-তে পাঠানোর মতো implementation করো।
+
+> Requirement:
+>
+> * Notification অবশ্যই `ShouldQueue` implement করবে।
+> * Existing email content পরিবর্তন করবে না।
+
+---
+
+# Step 5 — Queue Reset Password Email
+
+Password Reset Notification-ও queue-তে পাঠাবে।
+
+Requirement:
+
+* Existing email content পরিবর্তন করবে না।
+* শুধু queued notification ব্যবহার করবে।
+
+---
+
+# Step 6 — Testing
+
+### Test 1
+
+Register করো।
+
+Expected:
+
+* API সঙ্গে সঙ্গে `201`
+* `jobs` table-এ job add হবে
+* Queue worker email process করবে
+* Mailpit-এ verification email আসবে
+
+---
+
+### Test 2
+
+Forgot Password call করো।
+
+Expected:
+
+* API সঙ্গে সঙ্গে response
+* Job create হবে
+* Worker email send করবে
+* Mailpit-এ reset email আসবে
+
+---
+
+### Test 3
+
+Worker বন্ধ করো।
+
+আবার Register করো।
+
+Expected:
+
+* Email সঙ্গে সঙ্গে যাবে না
+* `jobs` table-এ pending থাকবে
+
+---
+
+### Test 4
+
+Worker আবার চালাও।
+
+Expected:
+
+* Pending job process হবে
+* Email Mailpit-এ পৌঁছাবে
+
+---
+
+# Commit
+
+```bash
+git add .
+git commit -m "feat(auth): queue authentication emails"
+git push
+```
+
+---
+

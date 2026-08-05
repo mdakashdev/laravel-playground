@@ -96,6 +96,19 @@
 * [ ] Invalid token handled
 * [ ] Commit & Push
 
+## Task 7: Queue Email
+
+* [ ] `QUEUE_CONNECTION=database`
+* [ ] Queue worker running
+* [ ] Verification email queued
+* [ ] Reset password email queued
+* [ ] Jobs table verified
+* [ ] Worker processes jobs
+* [ ] Mailpit verified
+* [ ] Commit & Push
+
+
+
 # Draft
 
 - built-in Email Verification flow ব্যবহার করতে পারব। se jonno MustVerifyEmail use in user model and trait check and db te check email_verified_at
@@ -148,3 +161,8 @@ token delete করে
 তোমাকে এগুলো manually করতে হবে না।
 
 - forget-password endpoint theke token niye /reset-password korbo
+
+---
+task7:
+notification create then 
+ovverride in usermodel
