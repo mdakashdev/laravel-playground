@@ -3,7 +3,6 @@
 namespace App\Actions\Auth;
 
 use App\Models\User;
-use Illuminate\Auth\Events\Verified;
 
 class VerifyEmailAction
 {
@@ -19,13 +18,9 @@ class VerifyEmailAction
            abort(403, 'Invalid verification link.');
        }
 
-       // Already verified হলে কিছুই করবে না
-       if ($user->hasVerifiedEmail()) {
-           return;
+       if (! $user->hasVerifiedEmail()) {
+           $user->markEmailAsVerified();
        }
 
-       if ($user->markEmailAsVerified()) {
-           event(new Verified($user));
-       }
    }
 }
