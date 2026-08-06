@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::get('/ping', function () {
     return \App\Support\ApiResponse::success(
@@ -88,3 +88,21 @@ Route::get('/reset-password/{token}', [AuthController::class, 'passwordResetPage
  */
 
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+
+
+
+
+/**
+ * Test Redis
+ */
+
+Route::get('/test-redis', function() {
+    $data = Cache::remember('test_redis', 60, function () {
+        return [
+            'message' => 'Hello Redis',
+            'time' => now()
+        ];
+    });
+
+    return response()->json($data);
+});
