@@ -23,3 +23,10 @@ Route::get('/middleware-order', function () {
 Route::get('/throttle', function () {
     return "many request";
 })->middleware('throttle: 5,1'); // 1 min = 5 request
+
+/**
+ * Cache
+ * Redis
+ */
+
+Route::get('/product', [\App\Http\Controllers\ProductController::class, 'index']);
