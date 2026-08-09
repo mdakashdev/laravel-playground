@@ -44,3 +44,40 @@ then password provide korea
 SHOW TABLES;
 DESCRIBE users;
 SHOW COLUMNS FROM users;
+
+# command - redis
+
+1. redis a in hobar jonno
+
+```bash
+docker compose exec redis bash
+```
+then: 
+```text
+redis-cli
+```
+
+2. db and others all details dekhar jonno 
+
+```bash
+info keyspace
+```
+
+output like - 
+
+## Keyspace
+db1:keys=1,expires=1,avg_ttl=539665,subexpiry=0
+
+## db select
+Here, `db1` dekha jacche aar seta select korar jonno
+- select 1 
+
+after select 1 then 127.0.0.1:6379[1]> eita dekha jabe
+
+## keys
+
+> all key dekhar jonno - `keys *` dile sob key gulo dekha jabe
+
+## get value
+
+> get api-dev-database-api-dev-cache-my_test_key
