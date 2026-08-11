@@ -1,4 +1,4 @@
-## Sprint 0 — Task 1 — Create Laravel Project
+# Task 1 — Create Laravel Project
 
 ## ✅ Checklist
 
@@ -10,7 +10,7 @@
 * [ ] `php artisan --version` কাজ করছে
 * [ ] Welcome page open হচ্ছে
 
-# Sprint 0 — Task 2: Git Setup
+# Task 2: Git Setup
 
 ### ✅ Checklist
 
@@ -20,7 +20,7 @@
 * [ ] `.env` ignored
 * [ ] `vendor` ignored
 
-## Sprint 0 — Task 3: Docker Setup
+## Task 3: Docker Setup
 
 ### ✅ Checklist
 
@@ -31,7 +31,7 @@
 * [ ] custom network আছে
 * [ ] MySQL volume আছে
 
-## Sprint 0 — Task 4 — Configure `.env`
+## Task 4 — Configure `.env`
 
 ## ✅ Checklist
 
@@ -39,7 +39,7 @@
 * [ ] Docker image build হয়েছে
 * [ ] সব container running
 
-## Sprint 0 — Task 5: Verify Docker & Laravel
+## Task 5: Verify Docker & Laravel
 
 ## ✅ Checklist
 
@@ -48,7 +48,7 @@
 * [ ] `php artisan --version` কাজ করছে
 * [ ] PHP extensions ঠিক আছে
 
-## Sprint 0 — Task 6: Database Verify & Migration
+## Task 6: Database Verify & Migration
 
 ## ✅ Checklist
 
@@ -57,7 +57,7 @@
 * [ ] `php artisan migrate:status`-এ সব `Ran`
 
 
-## Sprint 0 — Task 7: GitHub Repository
+## Task 7: GitHub Repository
 
 ## ✅ Checklist
 
@@ -65,7 +65,7 @@
 * [ ] GitHub repository তৈরি হয়েছে
 * [ ] Code push হয়েছে
 
-## Sprint 0 — Task 8: README
+## Task 8: README
 
 
 ```text

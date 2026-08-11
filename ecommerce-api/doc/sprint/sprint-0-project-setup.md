@@ -78,7 +78,7 @@ Laravel **12.64.0** ✔️
 
 ---
 
-# Sprint 0 — Task 2: Git Setup
+# Task 2: Git Setup
 
 ### Step 1
 
@@ -116,11 +116,11 @@ cat .gitignore
 
 ---
 
-# Sprint 0 — Task 3: Docker Setup
+# Task 3: Docker Setup
 
 in detail - @doc/docker-setup.md
 
-# Sprint 0 — Task 4 — Configure `.env`
+# Task 4 — Configure `.env`
 
 ## Step 1
 
@@ -148,7 +148,7 @@ Expected: সব service `Up` দেখাবে।
 
 ---
 
-# Sprint 0 — Task 5: Verify Docker & Laravel
+# Task 5: Verify Docker & Laravel
 
 ## Step 1
 
@@ -226,7 +226,7 @@ exit
 
 ---
 
-# Sprint 0 — Task 6: Database Verify & Migration
+# Task 6: Database Verify & Migration
 
 ## Step 1
 
@@ -292,4 +292,8 @@ exit
 ```
 ---
 
-# Sprint 0 — Task 7: GitHub Repository
+# Task 7: GitHub Repository
+- nothing, no need to note
+
+# Task 8: Readme
+- nothing, no need to note

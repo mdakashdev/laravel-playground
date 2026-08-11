@@ -13,6 +13,8 @@
 
 > 7. validation rules likho nicher info diye 
 
+> 8. Dockerfile create korar jonno akta question kora hoyeche - @doc/make-docker-compose-yml.md
+
 ```text
 name ( required, string, min:3, max:100 )
 email (required, email, max:255, unique:users,email)
