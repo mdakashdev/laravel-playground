@@ -59,8 +59,9 @@ and obossoi sei service gulo onujai `.env setup` korbo
 
 ## Production-standard API structure / folder structure / API Version Folder structure
 
-- 6 ta bisoy niye kaj hobe
-- routes, controller, requests, service, actions and responses
+- 8 ta bisoy niye kaj hobe
+- response and exception = 2
+- routes, controller, requests, service, actions and responses = 6
 - ekhane Requests and Resources, and controller hocche http
 - Controller আর Action-এর মাঝে orchestration/ অর্কেস্ট্রেশন layer Services তৈরি করা। 
 
@@ -68,6 +69,8 @@ and obossoi sei service gulo onujai `.env setup` korbo
 Folder Structure
 ```text
 app/
+├── Support --> all response handle
+├── Exceptions --> all exception handle
 ├── Actions/Auth/
 ├── Http/Controllers/Api/V1
 ├── Http/Requests/Api/V1/Auth/
@@ -80,6 +83,8 @@ routes/api_v1.php
 Example: With File
 ```text
 app/
+├── Support/ApiResponse
+├── Exceptions/ApiExceptionRender
 ├── Actions/Auth/RegisterUserAction
 ├── Http/Controllers/Api/V1/AuthController
 ├── Http/Requests/Api/V1/Auth/RegisterRequest
