@@ -1,4 +1,4 @@
-# Sprint 3 — Role & Permission (RBAC)
+# Sprint 3 — Role & Permission (RBAC - Role-Based Access Control)
 
 ## Objective
 
