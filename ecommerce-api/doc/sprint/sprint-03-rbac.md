@@ -226,3 +226,93 @@ git push
 ```
 
 ---
+
+# Task 3: Role Seeder
+
+## Goal
+
+Default application roles তৈরি করা এবং permissions assign করা।
+
+### Step 1 — Seeder তৈরি
+
+```bash
+docker compose exec app php artisan make:seeder RoleSeeder
+```
+
+### Step 2 — Roles
+
+এই ৩টি role তৈরি করো:
+
+```text
+admin
+manager
+customer
+```
+
+### Step 3 — Permission Assignment
+
+```text
+admin
+→ সব 12 permissions
+
+manager
+→ users.view
+→ users.update
+
+→ products.view
+→ products.create
+→ products.update
+
+→ orders.view
+→ orders.update
+
+customer
+→ products.view
+→ orders.view
+→ orders.create
+```
+
+### Step 4 — Seeder Register
+
+`DatabaseSeeder.php`-এ `RoleSeeder` call করো।
+
+Order:
+
+```text
+PermissionSeeder
+↓
+RoleSeeder
+```
+
+### Step 5 — Run
+
+```bash
+docker compose exec app php artisan db:seed
+```
+
+### Step 6 — Verify
+
+```bash
+docker compose exec app php artisan tinker
+```
+
+```php
+Spatie\Permission\Models\Role::with('permissions')->get();
+```
+
+Verify করো:
+
+```text
+admin     → 12 permissions
+manager   → 8 permissions
+customer  → 5 permissions
+```
+
+### Step 7 — Commit
+
+```bash
+git add .
+git commit -m "feat(rbac): add role seeder"
+git push
+```
+---

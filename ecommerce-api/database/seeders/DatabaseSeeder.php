@@ -24,6 +24,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             PermissionSeeder::class,
+            RoleSeeder::class
         ]);
+        //RoleSeeder চালানোর আগে PermissionSeeder চালানো থাকতে হবে, কারণ role-গুলোর মধ্যে যে permissions assign করবে সেগুলো database-এ আগে থাকতে হবে।
     }
 }

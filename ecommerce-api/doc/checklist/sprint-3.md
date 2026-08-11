@@ -4,8 +4,8 @@
 
 ```text
 ✅ Task 1 — Install & Configure RBAC
-⬜ Task 2 — Permission Seeder
-⬜ Task 3 — Role Seeder
+✅ Task 2 — Permission Seeder
+✅ Task 3 — Role Seeder
 ⬜ Task 4 — Assign Role to User
 ⬜ Task 5 — Role Middleware
 ⬜ Task 6 — Permission Middleware
@@ -38,6 +38,17 @@
 * [ ] Tinker verified
 * [ ] Commit & Push
 
+## Task 3: Role Seeder
+
+* [ ] `RoleSeeder` তৈরি
+* [ ] `admin`
+* [ ] `manager`
+* [ ] `customer`
+* [ ] Permissions assigned
+* [ ] Seeder registered
+* [ ] Seeder executed
+* [ ] Tinker verified
+* [ ] Commit & Push
 
 
 # Draft
@@ -49,4 +60,12 @@
 - cache clear 
 - and tinker a verfiy kora role and permision create hoyeche kina!
 
-task2: 
+task2 and task3:
+
+- permission and role seder create korlam
+- 12 ta permission korechi - 3 ta modules a users, products and orders
+- seeder registraion in database seeder using call method
+- run seeder and permission table check in tinker
+
+- 3 ta role create korbo - admin, manager and customer then permission gulo assign korbo using syncPermissions
+- registration, then seed then verify in tinker Role::with('permissions')->get();
