@@ -1,3 +1,10 @@
+# Tasks
+- project setup, git setup and docker setup
+- API Response Standard and Global Exception Handling
+- Production-standard API structure / folder structure / API Version Folder structure
+
+
+
 # Important note
 - You don’t need to memorize anything to do something.
 - You just need to know what you want to do, which `document` you need to follow to do it, and where to find that document.
@@ -38,3 +45,45 @@ and obossoi sei service gulo onujai `.env setup` korbo
 ```
 
 > note: vule jeno na jai, local a kono db create korchi na, sob docker container a hobe
+
+
+# sprint - 1
+
+## API Response Standard and Global Exception Handling
+
+- API Response Standard: Project-এর **সব API একই JSON format** return করবে। s
+  - e jonno - app/Support/ApiResponse.php
+- Global Exception Handling: Project-এর **সব exception** এক জায়গা থেকে handle হবে। 
+  - se jono - app/Exceptions/ApiExceptionRender.php
+
+
+## Production-standard API structure / folder structure / API Version Folder structure
+
+- 6 ta bisoy niye kaj hobe
+- routes, controller, requests, service, actions and responses
+- ekhane Requests and Resources, and controller hocche http
+- Controller আর Action-এর মাঝে orchestration/ অর্কেস্ট্রেশন layer Services তৈরি করা। 
+
+
+Folder Structure
+```text
+app/
+├── Actions/Auth/
+├── Http/Controllers/Api/V1
+├── Http/Requests/Api/V1/Auth/
+├── Http/Resources/Api/V1/
+├── Services/Auth/
+routes/api_v1.php
+```
+
+
+Example: With File
+```text
+app/
+├── Actions/Auth/RegisterUserAction
+├── Http/Controllers/Api/V1/AuthController
+├── Http/Requests/Api/V1/Auth/RegisterRequest
+├── Http/Resources/Api/V1/UserResource
+├── Services/Auth/AuthService
+routes/api_v1.php
+```
