@@ -103,25 +103,25 @@ docker compose exec app php artisan optimize:clear
 docker compose exec app php artisan tinker
 ```
 
-তারপর:
+তারপর: এটা database-এ কতগুলো Role আছে সেটা count করবে
 
 ```php
 Spatie\Permission\Models\Role::count();
 ```
 
-Expected:
+Expected: যদি result 0 হয় - তার মানে এখনো কোনো Role তৈরি করা হয়নি।
 
 ```text
 0
 ```
 
-তারপর:
+তারপর: এটা database-এ কতগুলো Permission আছে সেটা count করবে।
 
 ```php
 Spatie\Permission\Models\Permission::count();
 ```
 
-Expected:
+Expected: যদি result 0 হয় - তার মানে এখনো কোনো Permission তৈরি করা হয়নি।
 
 ```text
 0
@@ -145,15 +145,84 @@ git push
 
 ---
 
-# ✅ Task 1 Checklist
 
-* [ ] Spatie Permission installed
-* [ ] Configuration published
-* [ ] Migration completed
-* [ ] `HasRoles` added to User
-* [ ] RBAC tables created
-* [ ] Cache cleared
-* [ ] Tinker verified
-* [ ] Commit & Push
+# Task 2: Permission Seeder
 
-**শেষ হলে `Done` লিখবে।**
+## Goal
+
+Application-এর সব permission database-এ seed করা।
+
+### Step 1 — Seeder তৈরি
+
+```bash
+docker compose exec app php artisan make:seeder PermissionSeeder
+```
+
+### Step 2 — Permissions
+
+`database/seeders/PermissionSeeder.php`-এ এই permissions তৈরি করো:
+
+```text
+users.view
+users.create
+users.update
+users.delete
+
+products.view
+products.create
+products.update
+products.delete
+
+orders.view
+orders.create
+orders.update
+orders.delete
+```
+
+প্রতিটি permission-এর জন্য Spatie-এর `Permission` model ব্যবহার করবে।
+
+**Duplicate permission তৈরি করা যাবে না।**
+
+### Step 3 — Seeder Register
+
+`DatabaseSeeder.php` থেকে `PermissionSeeder` call করো।
+
+### Step 4 — Run
+
+```bash
+docker compose exec app php artisan db:seed --class=PermissionSeeder
+```
+
+তারপর verify:
+
+```bash
+docker compose exec app php artisan tinker
+```
+
+```php
+Spatie\Permission\Models\Permission::count();
+```
+
+Expected:
+
+```text
+12
+```
+
+তারপর:
+
+```php
+Spatie\Permission\Models\Permission::pluck('name');
+```
+
+১২টি permission দেখতে হবে।
+
+### Step 5 — Commit
+
+```bash
+git add .
+git commit -m "feat(rbac): add permission seeder"
+git push
+```
+
+---
