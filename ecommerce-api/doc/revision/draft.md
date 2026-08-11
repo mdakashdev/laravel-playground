@@ -14,6 +14,8 @@
 
 # sprint - 0
 
+## project setup, git setup and docker setup
+
 - before project scafollding check must php, composer, docker, docker composer and git version, if not then install
 - laravel 12 project scaffolding korbo follow @sprint/sprint-0-project-setup.md (task-1)
 - git setup korbo sei jonno - task-2

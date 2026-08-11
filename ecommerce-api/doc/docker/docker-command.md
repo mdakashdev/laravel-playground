@@ -45,6 +45,23 @@ SHOW TABLES;
 DESCRIBE users;
 SHOW COLUMNS FROM users;
 
+## Images
+
+1. Show all images, including intermediate images
+```bash
+docker images -a
+```
+
+2. Delete a docker image
+```bash
+docker rmi IMAGE_ID
+```
+Example: 
+```bash
+docker rmi f8c3e57e8614
+```
+
+
 # command - redis
 
 1. redis a in hobar jonno
