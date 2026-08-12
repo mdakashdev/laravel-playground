@@ -1,5 +1,17 @@
 # Sprint 3 — Role & Permission (RBAC - Role-Based Access Control)
 
+## Tasks
+
+- Install & Configure RBAC
+  আমরা **Spatie Laravel Permission** ব্যবহার করব।
+- Permission Seeder
+  Application-এর সব permission database-এ seed করা।
+- Role Seeder
+  Default application roles তৈরি করা এবং permissions assign করা।
+- Assign Role to User
+  Admin user তৈরি হলে তাকে `admin` role assign করা এবং authenticated user-এর role management তৈরি করা।
+
+
 ## Sprint 3 Progress
 
 ```text
@@ -50,6 +62,19 @@
 * [ ] Tinker verified
 * [ ] Commit & Push
 
+## Task 4: Assign Role to User
+
+* [ ] `AdminUserSeeder`
+* [ ] Default admin user
+* [ ] Password hashed
+* [ ] `admin` role assigned
+* [ ] Duplicate-safe
+* [ ] Seeder order correct
+* [ ] Role verified
+* [ ] Permissions verified
+* [ ] Admin login verified
+* [ ] Commit & Push
+
 
 # Draft
 
@@ -68,4 +93,17 @@ task2 and task3:
 - run seeder and permission table check in tinker
 
 - 3 ta role create korbo - admin, manager and customer then permission gulo assign korbo using syncPermissions
+- syncPermissions use korar pore pivot table eigulo insert hoi - many to many relation a
 - registration, then seed then verify in tinker Role::with('permissions')->get();
+
+task4:
+- user er role ber korar jonno : $user->roles->pluck('name');
+- user er all roles ber korar jonno : $user->getAllPermissions()
+
+
+
+# Important
+
+- firstOrCreate eita mane age theke thakle create korbe na, mane আগে থাকলে নতুন user তৈরি করবে না।
+
+- must rbac a ki korle kon table a jai, puro senarion ta visual korte hobe, not memory just note and draw

@@ -145,7 +145,6 @@ git push
 
 ---
 
-
 # Task 2: Permission Seeder
 
 ## Goal
@@ -316,3 +315,260 @@ git commit -m "feat(rbac): add role seeder"
 git push
 ```
 ---
+
+# Task 4: Assign Role to User
+
+## Goal
+
+Admin user তৈরি হলে তাকে `admin` role assign করা এবং authenticated user-এর role management তৈরি করা।
+
+### Step 1 — Admin Seeder
+
+```bash id="5f3n2x"
+docker compose exec app php artisan make:seeder AdminUserSeeder
+```
+
+একটি default admin user তৈরি করো:
+
+```text
+name: Admin
+email: admin@example.com
+password: password
+```
+
+Password অবশ্যই `Hash::make()` দিয়ে store করবে।
+
+---
+
+### Step 2 — Assign Role
+
+User create করার পর:
+
+```php
+$user->assignRole('admin');
+```
+
+Duplicate admin user তৈরি করবে না।
+
+---
+
+### Step 3 — Seeder Order
+
+`DatabaseSeeder.php`:
+
+```text id="x9g6s1"
+PermissionSeeder
+↓
+RoleSeeder
+↓
+AdminUserSeeder
+```
+
+---
+
+### Step 4 — Run
+
+```bash id="fhv0o4"
+docker compose exec app php artisan db:seed
+```
+
+---
+
+### Step 5 — Verify
+
+```bash id="f9z6kl"
+docker compose exec app php artisan tinker
+```
+
+```php id="3a0u2v"
+$user = App\Models\User::where('email', 'admin@example.com')->first();
+
+$user->roles->pluck('name');
+```
+
+Expected:
+
+```text
+["admin"]
+```
+
+তারপর:
+
+```php id="l6m7sm"
+$user->getAllPermissions()->pluck('name');
+```
+
+Expected:
+
+```text
+12 permissions
+```
+
+---
+
+### Step 6 — Test Login
+
+Existing Login API দিয়ে:
+
+```text
+email: admin@example.com
+password: password
+```
+
+Token পাওয়া উচিত।
+
+---
+
+### Step 7 — Commit
+
+```bash id="d2z4qj"
+git add .
+git commit -m "feat(rbac): add admin user role assignment"
+git push
+```
+
+
+# Task 5: Role Middleware
+
+## Goal
+
+শুধু নির্দিষ্ট role-এর user যেন protected endpoint access করতে পারে।
+
+---
+
+### Step 1 — Middleware তৈরি
+
+```bash id="z7q0h1"
+docker compose exec app php artisan make:middleware RoleMiddleware
+```
+
+---
+
+### Step 2 — Middleware Logic
+
+`RoleMiddleware`-এ:
+
+```text id="g7x4v2"
+User authenticated?
+    ↓
+No → 401
+    ↓
+Yes
+    ↓
+Required role আছে?
+    ↓
+No → 403
+    ↓
+Yes
+    ↓
+Request continue
+```
+
+Middleware multiple roles support করবে।
+
+Example:
+
+```text id="xqv8ps"
+role:admin
+```
+
+অথবা:
+
+```text id="3y5n0k"
+role:admin,manager
+```
+
+---
+
+### Step 3 — Middleware Register
+
+Laravel 12-এর জন্য `bootstrap/app.php`-এ alias register করো:
+
+```php id="4q2q5z"
+->withMiddleware(function (Middleware $middleware) {
+    $middleware->alias([
+        'role' => \App\Http\Middleware\RoleMiddleware::class,
+    ]);
+})
+```
+
+Existing `withMiddleware()` থাকলে সেটার মধ্যে add করবে।
+
+---
+
+### Step 4 — Middleware Usage
+
+একটি test route তৈরি করো:
+
+```php id="6r7v2p"
+Route::get('/admin/test', function () {
+    return ApiResponse::success('Admin access granted.');
+})->middleware(['auth:sanctum', 'role:admin']);
+```
+
+---
+
+### Step 5 — Test
+
+#### Admin
+
+Login → token → endpoint call
+
+```http
+GET /api/v1/admin/test
+Authorization: Bearer TOKEN
+```
+
+Expected:
+
+```http
+200
+```
+
+---
+
+#### Customer
+
+Customer token দিয়ে একই endpoint call।
+
+Expected:
+
+```http
+403
+```
+
+---
+
+#### Unauthenticated
+
+Token ছাড়া call।
+
+Expected:
+
+```http
+401
+```
+
+---
+
+### Step 6 — Commit
+
+```bash id="d7n3kp"
+git add .
+git commit -m "feat(rbac): add role middleware"
+git push
+```
+
+---
+
+## Checklist
+
+* [ ] `RoleMiddleware`
+* [ ] Multiple roles supported
+* [ ] Middleware alias registered
+* [ ] Admin access works
+* [ ] Customer blocked
+* [ ] Unauthenticated blocked
+* [ ] Commit & Push
+
+**শেষ হলে `Done` লিখবে।**
