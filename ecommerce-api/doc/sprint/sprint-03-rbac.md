@@ -559,3 +559,138 @@ git push
 ```
 
 ---
+
+# Task 6: Permission Middleware
+
+## Goal
+
+Role-এর পাশাপাশি **specific permission** অনুযায়ী endpoint protect করা।
+
+---
+
+### Step 1 — Middleware তৈরি
+
+```bash
+docker compose exec app php artisan make:middleware PermissionMiddleware
+```
+
+### Step 2 — Middleware Logic
+
+Flow:
+
+```text
+User authenticated?
+    ↓
+No → 401
+    ↓
+Permission আছে?
+    ↓
+No → 403
+    ↓
+Yes → Continue
+```
+
+Multiple permissions support করবে:
+
+```text
+permission:users.view
+```
+
+এবং:
+
+```text
+permission:users.view,users.update
+```
+
+---
+
+### Step 3 — Register Alias
+
+`bootstrap/app.php`
+
+```php
+->withMiddleware(function (Middleware $middleware) {
+    $middleware->alias([
+        'role' => \App\Http\Middleware\RoleMiddleware::class,
+        'permission' => \App\Http\Middleware\PermissionMiddleware::class,
+    ]);
+})
+```
+
+---
+
+### Step 4 — Test Route
+
+```php
+Route::get('/users/test', function () {
+    return ApiResponse::success('Permission granted.');
+})->middleware([
+    'auth:sanctum',
+    'permission:users.view',
+]);
+```
+
+---
+
+### Step 5 — Test
+
+#### Admin
+
+`admin` user-এর `users.view` আছে।
+
+Expected:
+
+```http
+200
+```
+
+#### Manager
+
+`manager` user-এর `users.view` আছে।
+
+Expected:
+
+```http
+200
+```
+
+#### Customer
+
+`customer` user-এর `users.view` নেই।
+
+Expected:
+
+```http
+403
+```
+
+#### Unauthenticated
+
+Token ছাড়া:
+
+```http
+401
+```
+
+---
+
+### Step 6 — Verify Multiple Permission Support
+
+একটি route-এ:
+
+```text
+permission:users.view,users.update
+```
+
+দিয়ে verify করো।
+
+---
+
+### Step 7 — Commit
+
+```bash
+git add .
+git commit -m "feat(rbac): add permission middleware"
+git push
+```
+---

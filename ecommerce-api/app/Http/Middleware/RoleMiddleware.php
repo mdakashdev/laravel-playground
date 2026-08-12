@@ -27,6 +27,7 @@ class RoleMiddleware
         if (! $request->user()->hasAnyRole($roles)) {
             throw new AuthorizationException('Unauthorized, You do not have permission to access this resource.');
         }
+        //`hasAnyRole()` কাজ করার জন্য `User` model-এ Spatie-এর `HasRoles` trait থাকতে হবে
 
         return $next($request);
     }

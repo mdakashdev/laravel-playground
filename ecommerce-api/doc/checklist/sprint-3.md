@@ -1,5 +1,9 @@
 # Sprint 3 — Role & Permission (RBAC - Role-Based Access Control)
 
+Role based access permission hocche - user er upor permission deya hoi na, permission hoi role er upor
+orthat - akta role onek dhoroner poermission deya hoi, ei ei role ei ei kaj korte parbe.
+then user ke role define kore dei, same role many user pete pare, tara sei access/ permission gulo pabe
+
 ## Tasks
 
 - Install & Configure RBAC
@@ -12,7 +16,8 @@
   Admin user তৈরি হলে তাকে `admin` role assign করা এবং authenticated user-এর role management তৈরি করা।
 - Role Middleware
   শুধু নির্দিষ্ট role-এর user যেন protected endpoint access করতে পারে।
-
+- Permission Middleware
+  Role-এর পাশাপাশি **specific permission** অনুযায়ী endpoint protect করা।
 
 ## Sprint 3 Progress
 
@@ -22,7 +27,7 @@
 ✅ Task 3 — Role Seeder
 ✅ Task 4 — Assign Role to User
 ✅ Task 5 — Role Middleware
-⬜ Task 6 — Permission Middleware
+✅ Task 6 — Permission Middleware
 ⬜ Task 7 — Admin APIs
 ⬜ Task 8 — Feature Tests
 ⬜ Task 9 — Refactor
@@ -87,6 +92,18 @@
 * [ ] Unauthenticated blocked
 * [ ] Commit & Push
 
+## Task 6: Permission Middleware
+
+* [ ] `PermissionMiddleware`
+* [ ] Single permission support
+* [ ] Multiple permission support
+* [ ] Alias registered
+* [ ] Admin access
+* [ ] Manager access
+* [ ] Customer blocked
+* [ ] Unauthenticated blocked
+* [ ] Commit & Push
+
 
 # Draft
 
@@ -117,6 +134,19 @@ task5:
 - middleware create korechi - then authentication check then authrizaton check korechi kono role ache kina
 - middleware registration korechi
 - route a assigne korechi, and route theke middleware er argument niyechi role
+
+note: hasAnyRole pete hole obossoi - `hasAnyRole()` কাজ করার জন্য তোমার `User` model-এ Spatie-এর `HasRoles` trait থাকতে হবে
+
+task6:
+Role-এর পাশাপাশি **specific permission** অনুযায়ী endpoint protect করা।
+
+age amra akta endpoint ke role=admin name only role ache kina seta te atkiyechi, 
+now role thakle second check korbo sei user er specific permission
+
+- permission middleware create korlam, as it is authentication and permission check korlam
+- register korlam then route a assign korlam
+- permission argumane rcv korlam
+
 
 # Important
 

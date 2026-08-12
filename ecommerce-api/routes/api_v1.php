@@ -32,11 +32,15 @@ Route::get('/error-500', function () {
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/me', [AuthController::class, 'me'])->middleware('auth:sanctum');
+//Route::get('/me', [AuthController::class, 'me'])->middleware('auth:sanctum');
 
 //authenticated endpoint using auth:sanctum
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/me', [AuthController::class, 'me'])->middleware('role:admin');
+    //role check
+    //Route::get('/me', [AuthController::class, 'me'])->middleware('role:admin');
+    //permission check
+    Route::get('/me', [AuthController::class, 'me'])->middleware('permission:users.view');
+    //Route::get('/me', [AuthController::class, 'me'])->middleware('permission:users.view,users.update');
     Route::get('/logout', [AuthController::class, 'logout']);
 });
 
