@@ -427,7 +427,6 @@ git commit -m "feat(rbac): add admin user role assignment"
 git push
 ```
 
-
 # Task 5: Role Middleware
 
 ## Goal
@@ -560,15 +559,3 @@ git push
 ```
 
 ---
-
-## Checklist
-
-* [ ] `RoleMiddleware`
-* [ ] Multiple roles supported
-* [ ] Middleware alias registered
-* [ ] Admin access works
-* [ ] Customer blocked
-* [ ] Unauthenticated blocked
-* [ ] Commit & Push
-
-**শেষ হলে `Done` লিখবে।**

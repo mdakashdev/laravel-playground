@@ -36,7 +36,7 @@ Route::get('/me', [AuthController::class, 'me'])->middleware('auth:sanctum');
 
 //authenticated endpoint using auth:sanctum
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/me', [AuthController::class, 'me']);
+    Route::get('/me', [AuthController::class, 'me'])->middleware('role:admin');
     Route::get('/logout', [AuthController::class, 'logout']);
 });
 

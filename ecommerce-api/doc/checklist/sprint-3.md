@@ -10,6 +10,8 @@
   Default application roles তৈরি করা এবং permissions assign করা।
 - Assign Role to User
   Admin user তৈরি হলে তাকে `admin` role assign করা এবং authenticated user-এর role management তৈরি করা।
+- Role Middleware
+  শুধু নির্দিষ্ট role-এর user যেন protected endpoint access করতে পারে।
 
 
 ## Sprint 3 Progress
@@ -18,8 +20,8 @@
 ✅ Task 1 — Install & Configure RBAC
 ✅ Task 2 — Permission Seeder
 ✅ Task 3 — Role Seeder
-⬜ Task 4 — Assign Role to User
-⬜ Task 5 — Role Middleware
+✅ Task 4 — Assign Role to User
+✅ Task 5 — Role Middleware
 ⬜ Task 6 — Permission Middleware
 ⬜ Task 7 — Admin APIs
 ⬜ Task 8 — Feature Tests
@@ -75,6 +77,16 @@
 * [ ] Admin login verified
 * [ ] Commit & Push
 
+## Task 5: Role Middleware
+
+* [ ] `RoleMiddleware`
+* [ ] Multiple roles supported
+* [ ] Middleware alias registered
+* [ ] Admin access works
+* [ ] Customer blocked
+* [ ] Unauthenticated blocked
+* [ ] Commit & Push
+
 
 # Draft
 
@@ -100,7 +112,11 @@ task4:
 - user er role ber korar jonno : $user->roles->pluck('name');
 - user er all roles ber korar jonno : $user->getAllPermissions()
 
-
+task5: 
+- akta nidisto endpoint ke middleware er moddhe niye aslam se jonno
+- middleware create korechi - then authentication check then authrizaton check korechi kono role ache kina
+- middleware registration korechi
+- route a assigne korechi, and route theke middleware er argument niyechi role
 
 # Important
 
