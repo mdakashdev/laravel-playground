@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\AdminController;
 use App\Http\Controllers\Api\V1\AuthController;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +44,17 @@ Route::middleware('auth:sanctum')->group(function () {
     //Route::get('/me', [AuthController::class, 'me'])->middleware('permission:users.view,users.update');
     Route::get('/logout', [AuthController::class, 'logout']);
 });
+
+
+/**
+ * Implement spatie
+ * authenticate hote hobe- tai sanctum use korte hobe
+ * Role: admin
+ */
+Route::middleware('auth:sanctum')->group(function() {
+    Route::get('/admin/users', [AdminController::class, 'index'])->middleware('permission:users.view');
+});
+
 
 
 /**
