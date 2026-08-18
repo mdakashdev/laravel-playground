@@ -30,3 +30,25 @@ Route::get('/throttle', function () {
  */
 
 Route::get('/product', [\App\Http\Controllers\ProductController::class, 'index']);
+
+
+/**
+ * event - listener
+ */
+
+Route::get('/test-order', function() {
+
+    //mock order
+    $order = [
+        'id' => 101,
+        'customer' => 'Rahim',
+        'product' => 'Laravel Book',
+        'price' => 500,
+    ];
+
+    // Dispatch Event
+    event(new \App\Events\OrderPlaced($order));
+
+    return "Order Successfully";
+
+});
