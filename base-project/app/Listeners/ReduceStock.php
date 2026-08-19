@@ -21,6 +21,6 @@ class ReduceStock
      */
     public function handle(OrderPlaced $event): void
     {
-        echo "<br>reduce order";
+        echo "reduce order<br>";
     }
 }

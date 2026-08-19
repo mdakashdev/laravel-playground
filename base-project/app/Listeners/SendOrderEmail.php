@@ -21,7 +21,7 @@ class SendOrderEmail
      */
     public function handle(OrderPlaced $event): void
     {
-        dd($event);
+        //dd($event);
         echo "Email sent for Order #{$event->order['id']}<br>";
         //echo "Email sent <br>";
     }
