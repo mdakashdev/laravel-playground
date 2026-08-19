@@ -36,7 +36,7 @@ Route::get('/product', [\App\Http\Controllers\ProductController::class, 'index']
  * event - listener
  */
 
-Route::get('/test-order', function() {
+Route::get('/test-event', function() {
 
     //mock order
     $order = [
@@ -51,4 +51,17 @@ Route::get('/test-order', function() {
 
     return "Order Successfully";
 
+});
+
+/**
+ * jobs and queue
+ */
+
+Route::get('/test-job', function() {
+
+    $user = \App\Models\User::first();
+
+    \App\Jobs\SendWelcomeEmail::dispatch($user);
+
+    return "job dispatch";
 });

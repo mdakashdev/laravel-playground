@@ -6,7 +6,7 @@ use App\Events\OrderPlaced;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class ReduceStock
+class ReduceStock implements ShouldQueue
 {
     /**
      * Create the event listener.
