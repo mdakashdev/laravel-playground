@@ -51,9 +51,18 @@ Route::middleware('auth:sanctum')->group(function () {
  * authenticate hote hobe- tai sanctum use korte hobe
  * Role: admin
  */
-Route::middleware('auth:sanctum')->group(function() {
-    Route::get('/admin/users', [AdminController::class, 'index'])->middleware('permission:users.view');
-});
+Route::prefix('admin')
+    ->middleware('auth:sanctum')
+    ->group(function() {
+        Route::get('/users', [AdminController::class, 'index'])
+            ->middleware('permission:users.view');
+
+        Route::get('/users/{user}', [AdminController::class, 'show'])
+            ->middleware(('permission:users.view'));
+
+        Route::get('/users/{user}/role', [AdminController::class, 'assignRole'])
+            ->middleware('permission:users.update');
+    });
 
 
 
