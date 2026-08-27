@@ -25,7 +25,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PermissionSeeder::class,
             RoleSeeder::class,
-            AdminUserSeeder::class
+            AdminUserSeeder::class,
+            CustomerUserSeeder::class
         ]);
         //অবশ্যই আগে `admin` role তৈরি থাকতে হবে—অর্থাৎ তোমার `RoleSeeder` আগে run করা উচিত।
         //RoleSeeder চালানোর আগে PermissionSeeder চালানো থাকতে হবে, কারণ role-গুলোর মধ্যে যে permissions assign করবে সেগুলো database-এ আগে থাকতে হবে।

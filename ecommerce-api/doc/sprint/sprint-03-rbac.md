@@ -694,3 +694,337 @@ git commit -m "feat(rbac): add permission middleware"
 git push
 ```
 ---
+
+# Task 7: Admin APIs
+
+## Goal
+
+এখন RBAC system-কে actual API-এর সাথে connect করব।
+
+এই Task শেষে Admin user পারবে:
+
+* User list দেখতে
+* User-এর role দেখতে
+* User-কে role assign করতে
+* User-এর role change করতে
+
+---
+
+## Step 1 — Create Admin Controller
+
+```bash
+docker compose exec app php artisan make:controller Api/V1/Admin/UserController
+```
+
+Methods:
+
+```text
+index()
+show()
+assignRole()
+```
+
+---
+
+## Step 2 — Create Requests
+
+### Assign Role Request
+
+```bash
+docker compose exec app php artisan make:request Api/V1/Admin/AssignRoleRequest
+```
+
+Validation:
+
+```text
+role => required|string|exists:roles,name
+```
+
+---
+
+## Step 3 — Create Admin Action
+
+```bash
+docker compose exec app php artisan make:class Actions/Admin/AssignUserRoleAction
+```
+
+Method:
+
+```php
+execute(User $user, string $role): void
+```
+
+Logic:
+
+```text
+User
+ ↓
+Remove existing role
+ ↓
+Assign requested role
+```
+
+Spatie method ব্যবহার করবে:
+
+```php
+$user->syncRoles($role);
+```
+
+`assignRole()` ব্যবহার না করে এখানে `syncRoles()` ব্যবহার করবে, কারণ আমরা চাই user-এর **current role replace** হোক।
+
+---
+
+## Step 4 — Admin User List API
+
+Route:
+
+```http
+GET /api/v1/admin/users
+```
+
+Middleware:
+
+```text
+auth:sanctum
++
+permission:users.view
+```
+
+Controller:
+
+```php
+public function index()
+{
+    $users = User::with('roles')
+        ->latest()
+        ->paginate(15);
+
+    return ApiResponse::success(
+        'Users retrieved successfully.',
+        $users
+    );
+}
+```
+
+---
+
+## Step 5 — Admin User Details API
+
+Route:
+
+```http
+GET /api/v1/admin/users/{user}
+```
+
+Middleware:
+
+```text
+auth:sanctum
++
+permission:users.view
+```
+
+Response-এ দেখাবে:
+
+```text
+id
+name
+email
+email_verified_at
+roles
+created_at
+```
+
+Password কখনো response-এ যাবে না।
+
+---
+
+## Step 6 — Assign / Change Role API
+
+Route:
+
+```http
+PUT /api/v1/admin/users/{user}/role
+```
+
+Middleware:
+
+```text
+auth:sanctum
++
+permission:users.update
+```
+
+Request:
+
+```json
+{
+    "role": "manager"
+}
+```
+
+Flow:
+
+```text
+Controller
+    ↓
+AssignRoleRequest
+    ↓
+AssignUserRoleAction
+    ↓
+syncRoles()
+    ↓
+ApiResponse
+```
+
+Response:
+
+```json
+{
+    "success": true,
+    "message": "User role updated successfully.",
+    "data": {
+        "id": 2,
+        "name": "John",
+        "role": "manager"
+    }
+}
+```
+
+---
+
+## Step 7 — Route Organization
+
+`routes/api_v1.php`
+
+Admin routes আলাদা group-এ রাখো:
+
+```php
+Route::prefix('admin')
+    ->middleware('auth:sanctum')
+    ->group(function () {
+
+        Route::get('/users', [UserController::class, 'index'])
+            ->middleware('permission:users.view');
+
+        Route::get('/users/{user}', [UserController::class, 'show'])
+            ->middleware('permission:users.view');
+
+        Route::put('/users/{user}/role', [UserController::class, 'assignRole'])
+            ->middleware('permission:users.update');
+    });
+```
+
+---
+
+## Step 8 — Test with Admin
+
+Admin login করো।
+
+### Users
+
+```http
+GET /api/v1/admin/users
+Authorization: Bearer ADMIN_TOKEN
+```
+
+Expected:
+
+```http
+200
+```
+
+---
+
+### User Details
+
+```http
+GET /api/v1/admin/users/2
+Authorization: Bearer ADMIN_TOKEN
+```
+
+Expected:
+
+```http
+200
+```
+
+---
+
+### Change Role
+
+```http
+PUT /api/v1/admin/users/2/role
+Authorization: Bearer ADMIN_TOKEN
+Content-Type: application/json
+```
+
+```json
+{
+    "role": "manager"
+}
+```
+
+Expected:
+
+```http
+200
+```
+
+---
+
+## Step 9 — Test with Customer
+
+Customer token দিয়ে:
+
+```http
+GET /api/v1/admin/users
+```
+
+Expected:
+
+```http
+403
+```
+
+Role change:
+
+```http
+PUT /api/v1/admin/users/2/role
+```
+
+Expected:
+
+```http
+403
+```
+
+---
+
+## Step 10 — Important Security Test
+
+একজন Admin অন্য Admin-এর role পরিবর্তন করতে পারছে কিনা test করো।
+
+এখন **এই restriction implement করবে না**।
+
+কারণ পরের Sprint/Policy layer-এ আমরা সিদ্ধান্ত নেব:
+
+```text
+Can Admin modify another Admin?
+Can Admin remove own admin role?
+Can Manager modify users?
+```
+
+এই Task-এ শুধু permission-based authorization থাকবে।
+
+---
+
+## Step 11 — Commit
+
+```bash
+git add .
+git commit -m "feat(admin): add user role management APIs"
+git push
+```
+
+---

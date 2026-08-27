@@ -104,6 +104,22 @@ then user ke role define kore dei, same role many user pete pare, tara sei acces
 * [ ] Unauthenticated blocked
 * [ ] Commit & Push
 
+## Task 7: Admin APIs
+
+* [ ] Admin UserController
+* [ ] AssignRoleRequest
+* [ ] AssignUserRoleAction
+* [ ] `GET /admin/users`
+* [ ] `GET /admin/users/{user}`
+* [ ] `PUT /admin/users/{user}/role`
+* [ ] `users.view` protection
+* [ ] `users.update` protection
+* [ ] Pagination
+* [ ] Password hidden
+* [ ] Admin tested
+* [ ] Customer blocked
+* [ ] Commit & Push
+
 
 # Draft
 
@@ -147,9 +163,13 @@ now role thakle second check korbo sei user er specific permission
 - register korlam then route a assign korlam
 - permission argumane rcv korlam
 
+task7: 
+- all users er role dekhar jonno akta api korechi - kon user kon role a ache , sei endpoint to sobai dekte parbe na, seta admin user ke deya hoyechc
+- middleware('permission:users.view'); ja middleware diye sei endpoint a bole deya hoyeche.
 
 # Important
 
 - firstOrCreate eita mane age theke thakle create korbe na, mane আগে থাকলে নতুন user তৈরি করবে না।
 
 - must rbac a ki korle kon table a jai, puro senarion ta visual korte hobe, not memory just note and draw
+

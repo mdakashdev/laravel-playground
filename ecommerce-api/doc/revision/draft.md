@@ -1,8 +1,7 @@
 # Tasks
-- project setup, git setup and docker setup
-- API Response Standard and Global Exception Handling
-- Production-standard API structure / folder structure / API Version Folder structure
-
+1. project setup, git setup and docker setup
+2. API Response Standard and Global Exception Handling
+3. Production-standard API structure / folder structure / API Version Folder structure
 
 
 # Important note
@@ -18,8 +17,7 @@
 
 ```
 
-
-# sprint - 0
+# sprint - 0 : Project, Git & Docker setup
 
 ## project setup, git setup and docker setup
 
@@ -47,12 +45,12 @@ and obossoi sei service gulo onujai `.env setup` korbo
 > note: vule jeno na jai, local a kono db create korchi na, sob docker container a hobe
 
 
-# sprint - 1
+# sprint - 1 : 
 
 ## API Response Standard and Global Exception Handling
 
-- API Response Standard: Project-এর **সব API একই JSON format** return করবে। s
-  - e jonno - app/Support/ApiResponse.php
+- API Response Standard: Project-এর **সব API একই JSON format** return করবে।
+  - se jonno - app/Support/ApiResponse.php
 - Global Exception Handling: Project-এর **সব exception** এক জায়গা থেকে handle হবে। 
   - se jono - app/Exceptions/ApiExceptionRender.php
 

@@ -60,7 +60,7 @@ Route::prefix('admin')
         Route::get('/users/{user}', [AdminController::class, 'show'])
             ->middleware(('permission:users.view'));
 
-        Route::get('/users/{user}/role', [AdminController::class, 'assignRole'])
+        Route::put('/users/{user}/role', [AdminController::class, 'assignRole'])
             ->middleware('permission:users.update');
     });
 
