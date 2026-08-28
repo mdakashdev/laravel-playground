@@ -13,12 +13,33 @@ ei role a permission dibo - `user create, update and delete` korte parbe,
 
 then jei koijon user ke amra ei permission gulo dite cai sei user gulo ke `admin` role ta assign kore dibo.
 
-so ei kajta korte hole amader dorkar; 4 ta step
+so ei kajta korte hole amader dorkar; 5 ta step
 
 1. role
 2. permission
 3. one role many permissions
 4. role assign to users
+5. endpoint ke permission / role assign kora using middleware
+
+> RBAC complete korte 5 ta step lage.
+
+## Flow:
+
+- তুমি যখন: `$user->assignRole('Admin'); করো`, তুমি endpoint protection করছো না। তুমি বলছো: এই user কোন permissions পাবে?
+
+- অন্যদিকে: `->middleware('permission:users.view')` বলছে: এই endpoint ব্যবহার করতে কোন permission লাগবে?
+
+অর্থাৎ:
+ROLE
+↓
+কোন permission user পাবে?
+
+
+MIDDLEWARE
+↓
+কোন permission endpoint-এর জন্য required?
+
+---
 
 RBAC use korar jonno amra laravel er packege use korbo - `spatie/laravel-permission`
 
@@ -38,8 +59,6 @@ Step
     akta user ke role assign korte hole - api diye role nite hobe (admin/customer/manager) etc 
     sei jonno akta `request fil`e lagbe validate korar jonno
     then akta `action file` lagbe sync korar jonno, amra ager thakle replace kore dibo tai - `syncRoles` use korbo
-
-
 
 ## manually thinking
 
@@ -132,6 +151,19 @@ model_has_roles table:
 ```
 
 note: amra caile ekjon user ke sorasori permission o set korte pari, but korbo na bec, amara role based korteci.
+
+### endpoint permission / role assign kora.
+
+ami user er permission set korechi role assign er maddhome - like `admin` role user.view, create, update and delete 
+
+/admin/users , ei endpoint ta kara dekte parbe seta to kothao boli ni, sei jonno ekhane permission set korte hobe like
+
+Route::get('/admin/users', [AdminController::class, 'index'])->middleware('permission:users.view');
+
+- mane ami bollam, jei jei user er `users.view` permission ache tara dekte parbe.
+- jodi role:admin ditam tahole jei jei user er admin role ache tara dekte peto, but permssion:users.view diyeche jeno
+- onek role a user:view assign thakte pare je somosto role ei users.view permission deya ache tara sobai dekte parbe
+- aar eita atkano hoi - middleware diye
 
 ## laravel package thinking 
 
@@ -250,11 +282,13 @@ Permissions:
 দিচ্ছো।
 
 তোমার Laravel code-এ
+
+```php
 Route::get('/users', [AdminController::class, 'index'])
 ->middleware('permission:users.view');
+```
+এখানে বলা হচ্ছে: `/admin/users` endpoint-এ ঢুকতে users.view permission লাগবে।
 
-এখানে বলা হচ্ছে:
-/admin/users endpoint-এ ঢুকতে users.view permission লাগবে।
 আর user-এর role:
 Admin
 ↓
@@ -262,7 +296,9 @@ users.view
 
 বলে:
 এই user-এর users.view permission আছে।
+
 তারপর permission middleware দুইটা information মিলায়:
+
 Endpoint requirement
 ↓
 users.view
@@ -276,6 +312,7 @@ users.view
        ✅ Allow
 
 যদি user-এর permission না থাকে:
+
 Endpoint requirement
 ↓
 users.view
@@ -289,20 +326,14 @@ products.view
        ❌ Deny
 
 তাহলে "role assign করলাম" মানে কী?
+
 এটা খুব গুরুত্বপূর্ণ।
-তুমি যখন:
 
-$user->assignRole('Admin');
+তুমি যখন: $user->assignRole('Admin'); করো, তুমি endpoint protection করছো না।
+তুমি বলছো: এই user কোন permissions পাবে?
+অন্যদিকে: ->middleware('permission:users.view')
+বলছে: এই endpoint ব্যবহার করতে কোন permission লাগবে?
 
-করো, তুমি endpoint protection করছো না।
-তুমি বলছো:
-
-এই user কোন permissions পাবে?
-অন্যদিকে:
-->middleware('permission:users.view')
-
-বলছে:
-এই endpoint ব্যবহার করতে কোন permission লাগবে?
 অর্থাৎ:
 ROLE
 ↓
@@ -314,9 +345,13 @@ MIDDLEWARE
 কোন permission endpoint-এর জন্য required?
 
 তোমার পুরো flow
+
 তোমার request:
+
+```
 GET /admin/users
 Authorization: Bearer TOKEN
+```
 
 তারপর roughly:
 Request
@@ -345,14 +380,13 @@ Controller
 index()
 
 তাই তোমার route:
-Route::prefix('admin')
-->middleware('auth:sanctum')
+```php
+Route::prefix('admin')->middleware('auth:sanctum')
 ->group(function() {
-
         Route::get('/users', [AdminController::class, 'index'])
             ->middleware('permission:users.view');
-
-    });
+ });
+```
 
 এর অর্থ:
 auth:sanctum
@@ -367,11 +401,10 @@ Controller
 ↓
 কাজটা execute করো
 
-"Endpoint-এ permission না দিলে?"
-এটাই তোমার মূল প্রশ্নের উত্তর।
-যদি তুমি লেখো:
+## "Endpoint-এ permission না দিলে?"
 
-Route::get('/users', [AdminController::class, 'index']);
+এটাই তোমার মূল প্রশ্নের উত্তর।
+যদি তুমি লেখো: Route::get('/users', [AdminController::class, 'index']);
 
 এবং শুধু:
 ->middleware('auth:sanctum')
