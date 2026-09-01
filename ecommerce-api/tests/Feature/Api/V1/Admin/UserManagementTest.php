@@ -11,7 +11,7 @@ use Tests\TestCase;
 
 class UserManagementTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase; // er kaj hocche test run korar age db ke clean kore dibe
 
     protected function setUp(): void
     {
@@ -21,19 +21,22 @@ class UserManagementTest extends TestCase
             PermissionSeeder::class,
             RoleSeeder::class,
         ]);
+
+        // ekhane 2 ta seeder calalam
+        // jar kaj hocche - permission create kora & role create kora with assign
     }
 
     public function test_admin_can_access_admin_route(): void
     {
-        $admin = User::factory()->create();
+        $admin = User::factory()->create(); // akta user create korbe
 
         // Existing method অনুযায়ী admin role assign করো
-        $admin->assignRole('admin');
+        $admin->assignRole('admin'); // jei user create korlam take admin role assign korbo
 
         $response = $this->actingAs($admin)
-            ->getJson('/api/v1/admin/users');
+            ->getJson('/api/v1/admin/users'); //admin hisabe ei endpoint ke browse korbe
 
-        $response->assertStatus(200);
+        $response->assertStatus(200); // then succes status dibe
     }
 
     public function test_customer_cannot_access_admin_route(): void
