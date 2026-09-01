@@ -1028,3 +1028,253 @@ git push
 ```
 
 ---
+
+
+# Task 8: Feature Tests
+
+## Goal
+
+RBAC এবং Admin User Management API-এর Feature Tests লিখবে।
+
+> ⚠️ শুধু Feature Test। নতুন feature যোগ করবে না।
+
+---
+
+## Step 1 — Create Test
+
+```bash
+docker compose exec app php artisan make:test Feature/Api/V1/Admin/UserManagementTest
+```
+
+RBAC middleware-এর জন্য আলাদা test:
+
+```bash
+docker compose exec app php artisan make:test Feature/Api/V1/Rbac/RbacMiddlewareTest
+```
+
+---
+
+# Step 2 — Setup
+
+সব test-এ:
+
+```php
+use Illuminate\Foundation\Testing\RefreshDatabase;
+```
+
+Test শুরু হওয়ার আগে:
+
+* Permissions seed করবে
+* Roles seed করবে
+
+প্রয়োজন হলে:
+
+```php
+$this->seed([
+    PermissionSeeder::class,
+    RoleSeeder::class,
+]);
+```
+
+---
+
+# Step 3 — Role Middleware Tests
+
+Test করো:
+
+### Admin access
+
+```text
+Admin can access admin route → 200
+```
+
+### Customer blocked
+
+```text
+Customer cannot access admin route → 403
+```
+
+### Unauthenticated
+
+```text
+Guest cannot access admin route → 401
+```
+
+---
+
+# Step 4 — Permission Middleware Tests
+
+### User with permission
+
+```text
+User with users.view permission → 200
+```
+
+### User without permission
+
+```text
+User without users.view permission → 403
+```
+
+### Multiple permission middleware
+
+Verify:
+
+```text
+permission:users.view,users.update
+```
+
+Expected behavior অনুযায়ী test করো।
+
+---
+
+# Step 5 — Admin User List Tests
+
+### Authorized admin
+
+```text
+GET /api/v1/admin/users
+→ 200
+```
+
+Assert:
+
+* `success = true`
+* `message`
+* `data`
+
+### User without permission
+
+```text
+→ 403
+```
+
+### Unauthenticated
+
+```text
+→ 401
+```
+
+---
+
+# Step 6 — Admin User Details Tests
+
+### Authorized
+
+```text
+GET /api/v1/admin/users/{user}
+→ 200
+```
+
+Assert:
+
+```text
+id
+name
+email
+email_verified_at
+roles
+created_at
+```
+
+Password field থাকবে না।
+
+### Unauthorized
+
+```text
+→ 403
+```
+
+---
+
+# Step 7 — Assign Role Tests
+
+### Authorized
+
+Admin user:
+
+```http
+PUT /api/v1/admin/users/{user}/role
+```
+
+```json
+{
+    "role": "manager"
+}
+```
+
+Expected:
+
+```text
+200
+User has manager role
+Previous role removed
+```
+
+---
+
+### Invalid Role
+
+```json
+{
+    "role": "invalid-role"
+}
+```
+
+Expected:
+
+```text
+422
+```
+
+---
+
+### Unauthorized
+
+Customer user role change করতে পারবে না।
+
+Expected:
+
+```text
+403
+```
+
+---
+
+# Step 8 — Run Tests
+
+```bash
+docker compose exec app php artisan test
+```
+
+সব test pass হতে হবে।
+
+---
+
+# Step 9 — Commit
+
+```bash
+git add .
+git commit -m "test(rbac): add role permission feature tests"
+git push
+```
+
+---
+
+# ✅ Task 8 Checklist
+
+* [ ] UserManagementTest
+* [ ] RbacMiddlewareTest
+* [ ] Role middleware tests
+* [ ] Permission middleware tests
+* [ ] Admin access test
+* [ ] Unauthorized access test
+* [ ] User list test
+* [ ] User details test
+* [ ] Role assignment test
+* [ ] Invalid role test
+* [ ] Previous role removed test
+* [ ] All tests passed
+* [ ] Commit & Push
+
+**শেষ হলে `Done` লিখবে।**
