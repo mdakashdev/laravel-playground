@@ -4,10 +4,12 @@ amra 3 vage vag korte pari -
 
 1. Environment setup
 2. core setup - setUp()
-3. test
+3. testing
+
+---
 
 ## Step 
-1. create & configure / setup `.env.testing` & `.env.testing`
+1. create & configure / setup `.env.testing`
 2. database তৈরি
 3. APP_KEY generate
 4. Test migration
@@ -21,7 +23,9 @@ amra 3 vage vag korte pari -
 8. Test run
 ```
 
-# Environment setup 
+---
+
+# 1. Environment setup 
 
 ## .env.testing তৈরি
 
@@ -57,7 +61,9 @@ BROADCAST_CONNECTION=log
 FILESYSTEM_DISK=local
 ```
 
-## Make Database
+---
+
+# 2. Make Database
 
 setar jonno - root diye login korte hobe 
 
@@ -83,8 +89,9 @@ check permission:
 ```sql
 SHOW GRANTS FOR 'laravel'@'%';
 ```
+---
 
-## Test APP_KEY Generate
+# 3. Test APP_KEY Generate
 
 - তাহলে testing-এর জন্য আলাদা key কেন?
     কারণ testing environment আর production environment আলাদা রাখা ভালো।
@@ -113,8 +120,9 @@ sei jonno - always main application er `APP_KEY` akta backup rakhbe, env file ei
 php artisan about --env=testing
 php artisan key:generate --env=testing
 ```
+---
 
-## migrate 
+# 4. Test migrate 
 
 ```bash
 php artisan migrate --env=testing
@@ -135,7 +143,11 @@ php artisan migrate:status --env=testing
 <env name="DB_DATABASE" value="ecommerce_testing"/>
 ```
 
-## Test run
+---
+
+# 5. Setup phpunit.xml
+
+# 6. Test run
 
 এরপর :
 
@@ -227,7 +239,7 @@ User::factory()->create();
 
 ---
 
-## Test Environment Verify
+# Test Environment Verify
 
 একটা temporary test run করো:
 
@@ -275,7 +287,7 @@ $token = $customer->createToken('test-token')->plainTextToken;
 
 ---
 
-## Step 11 — Sanctum Test
+# Sanctum Test
 
 API request:
 
@@ -303,9 +315,7 @@ $response->assertStatus(403);
 
 ---
 
-
-
-## Step 14 — Very Important Safety Check ⚠️
+# Very Important Safety Check ⚠️
 
 Test চালানোর আগে নিশ্চিত হও:
 
