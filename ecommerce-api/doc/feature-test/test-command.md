@@ -21,3 +21,16 @@ Specific file:
 ```bash
 php artisan test tests/Feature/Api/V1/Admin/UserManagementTest.php
 ```
+
+
+
+
+
+# DB command
+
+```bash
+mysql -uroot -proot
+CREATE DATABASE IF NOT EXISTS ecommerce_testing;
+show databases;
+USE ecommerce_testing;
+```

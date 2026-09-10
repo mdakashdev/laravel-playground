@@ -147,6 +147,16 @@ php artisan migrate:status --env=testing
 
 # 5. Setup phpunit.xml
 
+```xml
+<php>
+    <env name="APP_ENV" value="testing"/>
+    <env name="CACHE_STORE" value="array"/>
+    <env name="DB_CONNECTION" value="mysql"/>
+    <env name="DB_DATABASE" value="ecommerce_testing"/>
+    <env name="MAIL_MAILER" value="array"/>
+</php>
+```
+
 # 6. Test run
 
 এরপর :
