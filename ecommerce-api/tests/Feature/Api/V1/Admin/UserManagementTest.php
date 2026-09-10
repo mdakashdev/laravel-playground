@@ -101,4 +101,29 @@ class UserManagementTest extends TestCase
         $response->assertStatus(401);
     }
 
+    public function test_authorized_admin_can_get_user_details(): void
+    {
+        // role assign
+        $this->user->assignRole('admin');
+
+        $reespone = $this->actingAs($this->user)
+                ->getJson('/api/v1/admin/users/'.$this->user->id);
+
+        $reespone->assertStatus(200)
+                 ->assertJson([
+                     'success' => true
+                 ])
+                 ->assertJsonStructure([
+                     'success',
+                     'message',
+                     'data' => [
+                         'id',
+                         'name',
+                         'email',
+                         'email_verified_at',
+                         'roles',
+                         'created_at'
+                     ]
+                 ]);
+    }
 }
