@@ -18,10 +18,10 @@ class PermissionMiddleware
     public function handle(Request $request, Closure $next, ...$permissions): Response
     {
 
-        // User authenticated?
+        // User authenticated?, ekhane user verify na hole user null pabo, then error throw kore dicci.
         if (! $request->user()) {
             // ekhane default message dekhane or custome message o deya jabe
-            throw new AuthenticationException();
+            throw new AuthenticationException('Unauthenticated User');
         }
 
         // Permission আছে?
