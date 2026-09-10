@@ -24,6 +24,8 @@ class UserManagementTest extends TestCase
 
         // ekhane 2 ta seeder calalam
         // jar kaj hocche - permission create kora & role create kora with assign
+
+        $this->user = User::factory()->create();
     }
 
     public function test_admin_can_access_admin_route(): void
@@ -57,4 +59,46 @@ class UserManagementTest extends TestCase
 
         $response->assertStatus(401);
     }
+
+    public function test_authorized_admin_can_access_user_list(): void
+    {
+        //$user = User::factory()->create();
+
+        //role assign
+        $this->user->assignRole('admin');
+
+        $response = $this->actingAs($this->user)
+            ->getJson('/api/v1/admin/users');
+
+        $response->assertStatus(200)
+                 ->assertJson([
+                     'success' => true
+                 ])
+                 ->assertJsonStructure([
+                     'success',
+                     'message',
+                     'data'
+                 ]);
+    }
+
+    public function test_user_without_users_view_permission_gets_403(): void
+    {
+        $user = User::factory()->create();
+
+        //role assign
+        $user->assignRole('customer');
+
+        $response = $this->actingAs($user)
+            ->getJson('/api/v1/admin/users');
+
+        $response->assertStatus(403);
+    }
+
+    public function test_unauthenticated_user_gets_401(): void
+    {
+        $response = $this->getJson('/api/v1/admin/users');
+
+        $response->assertStatus(401);
+    }
+
 }
