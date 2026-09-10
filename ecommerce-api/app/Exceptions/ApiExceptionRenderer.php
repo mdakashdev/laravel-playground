@@ -31,7 +31,7 @@ class ApiExceptionRenderer
 
             $e instanceof AuthenticationException =>
             ApiResponse::error(
-                message: 'Unauthenticated',
+                message: $e->getMessage(),
                 statusCode: 401,
             ),
 
