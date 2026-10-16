@@ -1054,7 +1054,7 @@ docker compose exec app php artisan make:test Feature/Api/V1/Rbac/RbacMiddleware
 
 ---
 
-# Step 2 — Setup
+## Step 2 — Setup
 
 সব test-এ:
 
@@ -1078,7 +1078,7 @@ $this->seed([
 
 ---
 
-# Step 3 — Role Middleware Tests
+## Step 3 — Role Middleware Tests
 
 Test করো:
 
@@ -1102,7 +1102,7 @@ Guest cannot access admin route → 401
 
 ---
 
-# Step 4 — Permission Middleware Tests
+## Step 4 — Permission Middleware Tests
 
 ### User with permission
 
